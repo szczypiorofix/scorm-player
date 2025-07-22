@@ -1,6 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
+
 import type { IScormPlayerProps, IScormState } from "./types";
-import { createScormApi } from "./ScormAPI.tsx";
+import { createScormApi } from "./ScormAPI";
+
+import './ScormPlayer.scss';
 
 const ScormPlayer: React.FC<IScormPlayerProps> = ({ scormFilePath }) => {
     const [scormState, setScormState] = useState<IScormState>({
@@ -42,25 +45,22 @@ const ScormPlayer: React.FC<IScormPlayerProps> = ({ scormFilePath }) => {
     }, [scormFilePath]);
 
     return (
-        <div>
-            <div>
-                <div>
+        <div className="scorm-player">
+            <div className="status-info">
+                <div className="status-group">
                     <h3>Status Inicjalizacji</h3>
-                    <p>
-                        {scormState.isInitialized ? 'Aktywne' : 'Nieaktywne'}
-                    </p>
+                    <p>{scormState.isInitialized ? 'Aktywne' : 'Nieaktywne'}</p>
                 </div>
-                <div>
+                <div className="status-group">
                     <h3>Status Ukończenia</h3>
                     <p>{scormState['cmi.core.lesson_status']}</p>
                 </div>
-                <div>
+                <div className="status-group">
                     <h3>Wynik</h3>
                     <p>{scormState['cmi.core.score.raw']}%</p>
                 </div>
             </div>
-
-            <div>
+            <div className="iframe-container">
                 {scormFilePath && (
                     <iframe
                         ref={iframeRef}

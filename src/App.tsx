@@ -1,7 +1,9 @@
 import React, {useEffect} from 'react';
 
 import ScormPlayer from './ScormPlayer';
-import { useScormManifest } from "./hooks/useScormManifest.ts";
+import { useScormManifest } from "./hooks/useScormManifest";
+
+import './App.scss';
 
 const App: React.FC = () => {
     const {
@@ -25,17 +27,15 @@ const App: React.FC = () => {
     if (!launchUrl) return <div>No launch URL found</div>;
 
     return (
-        <div>
-            <div>
-                <header>
-                    <h1>Odtwarzacz Szkoleń SCORM</h1>
-                    <p>Prototyp w React/TypeScript do uruchamiania i śledzenia postępów.</p>
-                </header>
-                <main>
-                    { launchUrl.length > 0 &&
-                    <ScormPlayer scormFilePath={'/scorm/'+launchUrl} /> }
-                </main>
-            </div>
+        <div className={"container"}>
+            <header>
+                <h1>Odtwarzacz Szkoleń SCORM</h1>
+                <p>Prototyp w React/TypeScript do uruchamiania i śledzenia postępów.</p>
+            </header>
+            <main>
+                { launchUrl.length > 0 &&
+                <ScormPlayer scormFilePath={'/scorm/'+launchUrl} /> }
+            </main>
         </div>
     );
 }
