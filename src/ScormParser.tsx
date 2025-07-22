@@ -1,14 +1,10 @@
-import type {Item, Organization, Resource, ScormManifest} from "./types";
+import type { Item, Organization, Resource, ScormManifest } from "./types";
 
 export class ScormParser {
-    /**
-     * Parse SCORM imsmanifest.xml content
-     */
     static parseManifest(xmlContent: string): ScormManifest {
         const parser = new DOMParser();
         const doc = parser.parseFromString(xmlContent, 'text/xml');
 
-        // Check for parsing errors
         const parserError = doc.querySelector('parsererror');
         if (parserError) {
             throw new Error('Invalid XML format');
@@ -22,15 +18,12 @@ export class ScormParser {
         const identifier = manifest.getAttribute('identifier') || '';
         const version = manifest.getAttribute('version') || '1.2';
 
-        // Extract metadata
         const title = this.getTextContent(doc, 'title') || 'Untitled Course';
         const description = this.getTextContent(doc, 'description');
 
-        // Parse organizations
         const organizations = this.parseOrganizations(doc);
         const defaultOrganization = manifest.getAttribute('default') || organizations[0]?.identifier;
 
-        // Parse resources
         const resources = this.parseResources(doc);
 
         return {
@@ -44,9 +37,6 @@ export class ScormParser {
         };
     }
 
-    /**
-     * Get the launch URL for the SCORM package
-     */
     static getLaunchUrl(manifest: ScormManifest): string | null {
         const defaultOrg = manifest.organizations.find(
             org => org.identifier === manifest.defaultOrganization
@@ -56,13 +46,11 @@ export class ScormParser {
             return null;
         }
 
-        // Get the first item's resource reference
         const firstItem = defaultOrg.items[0];
         if (!firstItem.identifierref) {
             return null;
         }
 
-        // Find the corresponding resource
         const resource = manifest.resources.find(
             res => res.identifier === firstItem.identifierref
         );
@@ -70,9 +58,6 @@ export class ScormParser {
         return resource?.href || null;
     }
 
-    /**
-     * Get all launchable items with their URLs
-     */
     static getLaunchableItems(manifest: ScormManifest): Array<{
         title: string;
         identifier: string;
@@ -104,7 +89,6 @@ export class ScormParser {
                 }
             }
 
-            // Recursively check nested items
             if (item.items) {
                 this.extractLaunchableItems(item.items, resources, result);
             }
@@ -139,7 +123,6 @@ export class ScormParser {
             const identifierref = itemElement.getAttribute('identifierref') || undefined;
             const title = this.getTextContent(itemElement, 'title') || 'Untitled Item';
 
-            // Recursively parse nested items
             const nestedItems = this.parseItems(itemElement);
 
             items.push({
@@ -162,7 +145,6 @@ export class ScormParser {
             const type = resourceElement.getAttribute('type') || '';
             const href = resourceElement.getAttribute('href') || '';
 
-            // Get all file references
             const files: string[] = [];
             const fileElements = resourceElement.querySelectorAll('file');
             fileElements.forEach(fileElement => {

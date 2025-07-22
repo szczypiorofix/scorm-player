@@ -43,31 +43,30 @@ const ScormPlayer: React.FC<IScormPlayerProps> = ({ scormFilePath }) => {
     }, [scormFilePath]);
 
     return (
-        <div className="bg-slate-100 p-4 sm:p-6 lg:p-8 rounded-xl shadow-lg">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6 text-center">
-                <div className="bg-white p-1 rounded-lg shadow">
-                    <h3 className="text-sm font-semibold text-slate-500 uppercase">Status Inicjalizacji</h3>
-                    <p className={`text-xl font-bold ${scormState.isInitialized ? 'text-green-600' : 'text-red-600'}`}>
+        <div>
+            <div>
+                <div>
+                    <h3>Status Inicjalizacji</h3>
+                    <p>
                         {scormState.isInitialized ? 'Aktywne' : 'Nieaktywne'}
                     </p>
                 </div>
-                <div className="bg-white p-1 rounded-lg shadow">
-                    <h3 className="text-sm font-semibold text-slate-500 uppercase">Status Ukończenia</h3>
-                    <p className="text-xl font-bold text-blue-800 capitalize">{scormState['cmi.core.lesson_status']}</p>
+                <div>
+                    <h3>Status Ukończenia</h3>
+                    <p>{scormState['cmi.core.lesson_status']}</p>
                 </div>
-                <div className="bg-white p-1 rounded-lg shadow">
-                    <h3 className="text-sm font-semibold text-slate-500 uppercase">Wynik</h3>
-                    <p className="text-xl font-bold text-blue-800">{scormState['cmi.core.score.raw']}%</p>
+                <div>
+                    <h3>Wynik</h3>
+                    <p>{scormState['cmi.core.score.raw']}%</p>
                 </div>
             </div>
 
-            <div className="bg-white rounded-lg overflow-hidden shadow-inner h-[75vh]">
+            <div>
                 {scormFilePath && (
                     <iframe
                         ref={iframeRef}
                         src={scormFilePath}
                         title="SCORM Content Player"
-                        className="w-full h-full border-0"
                         allowFullScreen
                     ></iframe>
                 )}
