@@ -8,7 +8,7 @@ export interface IScormApi {
     LMSInitialize: (param: string) => "true" | "false";
     LMSFinish: (param: string) => "true" | "false";
     LMSGetValue: (key: string) => string;
-    LMSSetValue: (key: string, value: any) => "true" | "false";
+    LMSSetValue: (key: string, value: unknown) => "true" | "false";
     LMSCommit: (param: string) => "true" | "false";
     LMSGetLastError: () => string;
     LMSGetErrorString: (errorCode: string) => string;

@@ -1,7 +1,7 @@
 import type { IScormApi, IScormState } from "./types";
 
-export const createScormApi = (onStateChange: (key: keyof IScormState, value: any) => void): IScormApi => {
-    const state: { [key: string]: any } = {
+export const createScormApi = (onStateChange: (key: keyof IScormState, value: unknown) => void): IScormApi => {
+    const state: { [key: string]: unknown } = {
         'cmi.core.lesson_status': 'incomplete',
         'cmi.core.student_name': 'Uczestnik',
         'cmi.core.score.raw': '0',
@@ -59,5 +59,5 @@ export const createScormApi = (onStateChange: (key: keyof IScormState, value: an
             console.log('LMSGetDiagnostic: ' + errorCode);
             return "No diagnostic information";
         },
-    };
+    } as IScormApi;
 };

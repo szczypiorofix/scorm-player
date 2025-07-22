@@ -14,7 +14,7 @@ const ScormPlayer: React.FC<IScormPlayerProps> = ({ scormFilePath }) => {
 
         console.log("Setting up SCORM environment for:", scormFilePath);
 
-        const handleStateChange = (key: keyof IScormState, value: any) => {
+        const handleStateChange = (key: keyof IScormState, value: unknown) => {
             console.log(`React State Update: ${key} ->`, value);
             setScormState(prevState => ({ ...prevState, [key]: value }));
         };
@@ -28,7 +28,6 @@ const ScormPlayer: React.FC<IScormPlayerProps> = ({ scormFilePath }) => {
         return () => {
             console.log("Cleaning up SCORM environment for:", scormFilePath);
 
-            // Wywołaj LMSFinish, jeśli API było zainicjowane
             if (window.API?.LMSGetValue('isInitialized') === 'true') {
                 window.API.LMSFinish("");
             }
