@@ -1,4 +1,4 @@
-import type { IScormApi, IScormState } from "./types";
+import type { IScormApi, IScormState } from "../types";
 
 export const createScormApi = (onStateChange: (key: keyof IScormState, value: unknown) => void): IScormApi => {
     const state: { [key: string]: unknown } = {
@@ -48,11 +48,12 @@ export const createScormApi = (onStateChange: (key: keyof IScormState, value: un
             return "true";
         },
         LMSGetLastError: () => {
-            console.log('LMSGetLastError');
             return "0";
         },
         LMSGetErrorString: (errorCode) => {
-            console.log('LMSGetErrorString: ' + errorCode);
+            if (errorCode) {
+                console.log('LMSGetErrorString: ' + errorCode);
+            }
             return "No error"
         },
         LMSGetDiagnostic: (errorCode) => {

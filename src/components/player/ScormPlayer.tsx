@@ -1,15 +1,16 @@
 import React, { useState, useEffect, useRef } from 'react';
 
-import type { IScormPlayerProps, IScormState } from "./types";
-import { createScormApi } from "./ScormAPI";
-
-import './ScormPlayer.scss';
+import type { IScormPlayerProps, IScormState } from "../../types";
+import { createScormApi } from "../../utils/ScormAPI";
+import * as SP from "./ScormPlayer.style";
+import { StatusGroup } from "./StatusGroup";
+import { SCORM_API_CONSTANTS } from "../../shared/constants";
 
 const ScormPlayer: React.FC<IScormPlayerProps> = ({ scormFilePath }) => {
     const [scormState, setScormState] = useState<IScormState>({
-        'cmi.core.lesson_status': 'nie rozpoczęto',
-        'cmi.core.score.raw': '0',
-        'isInitialized': false,
+        [SCORM_API_CONSTANTS.LESSON_STATUS]: 'nie rozpoczęto',
+        [SCORM_API_CONSTANTS.SCORE_RAW]: '0',
+        [SCORM_API_CONSTANTS.IS_INITIALIZED]: false,
     });
     const iframeRef = useRef<HTMLIFrameElement | null>(null);
     useEffect(() => {
@@ -31,10 +32,10 @@ const ScormPlayer: React.FC<IScormPlayerProps> = ({ scormFilePath }) => {
         return () => {
             console.log("Cleaning up SCORM environment for:", scormFilePath);
 
-            if (window.API?.LMSGetValue('isInitialized') === 'true') {
+            if (window.API?.LMSGetValue(SCORM_API_CONSTANTS.IS_INITIALIZED) === 'true') {
                 window.API.LMSFinish("");
             }
-            if (window.API_1484_11?.LMSGetValue('isInitialized') === 'true') {
+            if (window.API_1484_11?.LMSGetValue(SCORM_API_CONSTANTS.IS_INITIALIZED) === 'true') {
                 window.API_1484_11.LMSFinish("");
             }
 
@@ -45,32 +46,23 @@ const ScormPlayer: React.FC<IScormPlayerProps> = ({ scormFilePath }) => {
     }, [scormFilePath]);
 
     return (
-        <div className="scorm-player">
-            <div className="status-info">
-                <div className="status-group">
-                    <h3>Status Inicjalizacji</h3>
-                    <p>{scormState.isInitialized ? 'Aktywne' : 'Nieaktywne'}</p>
-                </div>
-                <div className="status-group">
-                    <h3>Status Ukończenia</h3>
-                    <p>{scormState['cmi.core.lesson_status']}</p>
-                </div>
-                <div className="status-group">
-                    <h3>Wynik</h3>
-                    <p>{scormState['cmi.core.score.raw']}%</p>
-                </div>
-            </div>
-            <div className="iframe-container">
+        <SP.ScormPlayer>
+            <SP.StatusInfo>
+                <StatusGroup title={"Status Inicjalizacji"} value={scormState.isInitialized ? 'Aktywne' : 'Nieaktywne'}/>
+                <StatusGroup title={"Status Ukończenia"} value={scormState[SCORM_API_CONSTANTS.LESSON_STATUS]}/>
+                <StatusGroup title={"Wynik"} value={scormState[SCORM_API_CONSTANTS.SCORE_RAW]+"%"}/>
+            </SP.StatusInfo>
+            <SP.IframeContainer>
                 {scormFilePath && (
-                    <iframe
+                    <SP.Iframe
                         ref={iframeRef}
                         src={scormFilePath}
                         title="SCORM Content Player"
                         allowFullScreen
-                    ></iframe>
+                    ></SP.Iframe>
                 )}
-            </div>
-        </div>
+            </SP.IframeContainer>
+        </SP.ScormPlayer>
     );
 };
 

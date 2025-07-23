@@ -1,4 +1,4 @@
-import type { Item, Organization, Resource, ScormManifest } from "./types";
+import type { Item, Organization, Resource, ScormManifest } from "../types";
 
 export class ScormParser {
     static parseManifest(xmlContent: string): ScormManifest {

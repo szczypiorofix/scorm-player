@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from 'react';
 
-import ScormPlayer from './ScormPlayer';
 import { useScormManifest } from "./hooks/useScormManifest";
 
-import './App.scss';
+import ScormPlayer from './components/player/ScormPlayer';
+import { Header } from "./components/header/Header";
+import { AppStyled } from "./App.style";
+import { Notification } from "./components/notification/Notification";
+import { NotificationType } from "./shared/NotificationType";
 
 const App: React.FC = () => {
     const [parsed, setParsed] = useState(false);
@@ -27,27 +30,17 @@ const App: React.FC = () => {
 
     const launchUrl = getLaunchUrl();
 
-    if (loading) return <div>Loading SCORM package...</div>;
-    if (error) return <div>Error: {error}</div>;
-    if (!launchUrl) return <div>No launch URL found</div>;
-
-    console.log(launchUrl);
-
     return (
-        <div className={"container"}>
-            <header>
-                <h1>Odtwarzacz Szkoleń SCORM</h1>
-                <p>Prototyp w React/TypeScript do uruchamiania i śledzenia postępów.</p>
-            </header>
-            {}
-            <div>
-
-            </div>
+        <AppStyled>
+            <Header />
+            { loading && <Notification message={"Loading SCORM package..."} type={NotificationType.INFO} /> }
+            { error && <Notification message={"Error: " + error} type={NotificationType.ERROR} /> }
+            { !loading && !launchUrl && <Notification message={"No launch URL found"} type={NotificationType.ERROR}/> }
             <main>
-                { launchUrl.length > 0 &&
+                { launchUrl && launchUrl.length > 0 &&
                 <ScormPlayer scormFilePath={'/scorm/'+launchUrl} /> }
             </main>
-        </div>
+        </AppStyled>
     );
 }
 
