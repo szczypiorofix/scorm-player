@@ -1,9 +1,11 @@
-import { SCORM_API_CONSTANTS } from "./shared/constants.ts";
+import { SCORM_API_CONSTANTS, LESSON_COMPLETION_STATUS } from "./shared/constants";
 
 export interface IScormState {
-    [SCORM_API_CONSTANTS.LESSON_STATUS]: 'nie rozpoczęto' | 'incomplete' | 'completed' | 'passed' | 'failed' | 'browsed';
+    [SCORM_API_CONSTANTS.LESSON_STATUS]: keyof LESSON_COMPLETION_STATUS;
     [SCORM_API_CONSTANTS.SCORE_RAW]: string;
     [SCORM_API_CONSTANTS.IS_INITIALIZED]: boolean;
+    [SCORM_API_CONSTANTS.SESSION_TIME]: string;
+    [SCORM_API_CONSTANTS.STUDENT_NAME]: string;
 }
 
 export interface IScormApi {
@@ -15,6 +17,7 @@ export interface IScormApi {
     LMSGetLastError: () => string;
     LMSGetErrorString: (errorCode: string) => string;
     LMSGetDiagnostic: (errorCode: string) => string;
+    _getState: () => { [key: string]: unknown },
 }
 
 export interface IScormPlayerProps {

@@ -4,13 +4,15 @@ import type { IScormPlayerProps, IScormState } from "../../types";
 import { createScormApi } from "../../utils/ScormAPI";
 import * as SP from "./ScormPlayer.style";
 import { StatusGroup } from "./StatusGroup";
-import { SCORM_API_CONSTANTS } from "../../shared/constants";
+import {LESSON_COMPLETION_STATUS, SCORM_API_CONSTANTS} from "../../shared/constants";
 
 const ScormPlayer: React.FC<IScormPlayerProps> = ({ scormFilePath }) => {
     const [scormState, setScormState] = useState<IScormState>({
-        [SCORM_API_CONSTANTS.LESSON_STATUS]: 'nie rozpoczęto',
+        [SCORM_API_CONSTANTS.LESSON_STATUS]: LESSON_COMPLETION_STATUS.NOT_STARTED,
         [SCORM_API_CONSTANTS.SCORE_RAW]: '0',
         [SCORM_API_CONSTANTS.IS_INITIALIZED]: false,
+        [SCORM_API_CONSTANTS.SESSION_TIME]: '0',
+        [SCORM_API_CONSTANTS.STUDENT_NAME]: 'Todd',
     });
 
     const iframeRef = useRef<HTMLIFrameElement | null>(null);
@@ -25,7 +27,11 @@ const ScormPlayer: React.FC<IScormPlayerProps> = ({ scormFilePath }) => {
             setScormState(prevState => ({ ...prevState, [key]: value }));
         };
 
-        const scormApi = createScormApi(handleStateChange);
+        const scormApi = createScormApi(
+            handleStateChange,
+            undefined,
+            () => { console.log('Progress saved.') }
+        );
         window.API = scormApi;
         window.API_1484_11 = scormApi;
 
@@ -50,9 +56,11 @@ const ScormPlayer: React.FC<IScormPlayerProps> = ({ scormFilePath }) => {
     return (
         <SP.ScormPlayer>
             <SP.StatusInfo>
+                <StatusGroup title={"Uczestnik"} value={scormState[SCORM_API_CONSTANTS.STUDENT_NAME]}/>
                 <StatusGroup title={"Status Inicjalizacji"} value={scormState.isInitialized ? 'Aktywne' : 'Nieaktywne'}/>
                 <StatusGroup title={"Status Ukończenia"} value={scormState[SCORM_API_CONSTANTS.LESSON_STATUS]}/>
                 <StatusGroup title={"Wynik"} value={scormState[SCORM_API_CONSTANTS.SCORE_RAW]+"%"}/>
+                <StatusGroup title={"Czas sesji"} value={scormState[SCORM_API_CONSTANTS.SESSION_TIME]}/>
             </SP.StatusInfo>
             <SP.IframeContainer>
                 {scormFilePath && (

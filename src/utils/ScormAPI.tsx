@@ -1,18 +1,26 @@
 import type { IScormApi, IScormState } from "../types";
+import { SCORM_API_CONSTANTS } from "../shared/constants";
 
-export const createScormApi = (onStateChange: (key: keyof IScormState, value: unknown) => void): IScormApi => {
+export const createScormApi = (
+    onStateChange: (key: keyof IScormState, value: unknown) => void,
+    initialData: Partial<{ [key: string]: unknown }> = {},
+    saveProgress: () => void
+): IScormApi => {
     const state: { [key: string]: unknown } = {
-        'cmi.core.lesson_status': 'incomplete',
-        'cmi.core.student_name': 'Uczestnik',
-        'cmi.core.score.raw': '0',
-        'cmi.suspend_data': '',
+        [SCORM_API_CONSTANTS.LESSON_STATUS]: 'incomplete',
+        [SCORM_API_CONSTANTS.STUDENT_NAME]: 'Uczestnik',
+        [SCORM_API_CONSTANTS.SCORE_RAW]: '0',
+        [SCORM_API_CONSTANTS.SESSION_TIME]: '0',
+        [SCORM_API_CONSTANTS.SUSPEND_DATA]: '',
+        ...initialData,
     };
     let isInitialized = false;
 
     const trackedKeys: (keyof IScormState)[] = [
-        'cmi.core.lesson_status',
-        'cmi.core.score.raw',
-        'isInitialized'
+        SCORM_API_CONSTANTS.LESSON_STATUS,
+        SCORM_API_CONSTANTS.SCORE_RAW,
+        SCORM_API_CONSTANTS.SESSION_TIME,
+        SCORM_API_CONSTANTS.IS_INITIALIZED
     ];
 
     return {
@@ -20,14 +28,24 @@ export const createScormApi = (onStateChange: (key: keyof IScormState, value: un
             if (isInitialized) return "false";
             isInitialized = true;
             console.log("LMS (Parent) Event: LMSInitialize. Param: " + param);
-            onStateChange('isInitialized', true);
+            onStateChange(SCORM_API_CONSTANTS.IS_INITIALIZED, true);
+
+            if(state[SCORM_API_CONSTANTS.LESSON_STATUS] !== 'completed') {
+                state[SCORM_API_CONSTANTS.LESSON_STATUS] = 'incomplete';
+                onStateChange(SCORM_API_CONSTANTS.LESSON_STATUS, 'incomplete');
+            }
+
             return "true";
         },
         LMSFinish: (param) => {
             if (!isInitialized) return "false";
             isInitialized = false;
             console.log("LMS (Parent) Event: LMSFinish. Param: " + param);
-            onStateChange('isInitialized', false);
+            onStateChange(SCORM_API_CONSTANTS.IS_INITIALIZED, false);
+
+            // save progress for training
+            saveProgress();
+
             return "true";
         },
         LMSGetValue: (key) => {
@@ -60,5 +78,6 @@ export const createScormApi = (onStateChange: (key: keyof IScormState, value: un
             console.log('LMSGetDiagnostic: ' + errorCode);
             return "No diagnostic information";
         },
+        _getState: () => state,
     } as IScormApi;
 };

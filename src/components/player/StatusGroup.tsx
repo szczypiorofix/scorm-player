@@ -4,12 +4,12 @@ import { StatusGroup as StatusGroupStyled, StatusKey, StatusValue } from "./Scor
 
 export interface StatusGroupProps {
     title: string;
-    value: string;
+    value: number| string | symbol;
 }
 
 export function StatusGroup(props: StatusGroupProps): React.JSX.Element {
     return  <StatusGroupStyled>
         <StatusKey>{props.title}</StatusKey>
-        <StatusValue>{props.value}</StatusValue>
+        <StatusValue>{props.value.toString()}</StatusValue>
     </StatusGroupStyled>
 }
