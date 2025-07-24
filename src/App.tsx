@@ -8,21 +8,24 @@ import { AppStyled } from "./App.style";
 import { Notification } from "./components/notification/Notification";
 import { NotificationType } from "./shared/NotificationType";
 
-const App: React.FC = () => {
+function App(): React.JSX.Element {
     const {
         loading,
         error,
         parseManifestFromUrl,
-        getLaunchUrl
+        getLaunchUrl,
+        manifest,
     } = useScormManifest();
 
     useEffect(() => {
-        parseManifestFromUrl('/scorm/imsmanifest.xml')
-            .then(() => {
-                console.log('Manifest parsed');
-            })
-            .catch(e => console.log('Error: ' + e));
-    }, []);
+        if (!manifest && !loading && !error) {
+            parseManifestFromUrl('/scorm/imsmanifest.xml')
+                .then(() => {
+                    console.log('Manifest parsed');
+                })
+                .catch(e => console.log('Error: ' + e));
+        }
+    }, [error, loading, manifest, parseManifestFromUrl]);
 
     const launchUrl = getLaunchUrl();
 

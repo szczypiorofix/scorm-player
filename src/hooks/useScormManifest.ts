@@ -9,12 +9,9 @@ export const useScormManifest = () => {
     const [error, setError] = useState<string | null>(null);
 
     const parseManifestFile = async (file: File) => {
-        setLoading(true);
-        setError(null);
-
         try {
-            const xmlContent = await file.text();
-            const parsedManifest = ScormParser.parseManifest(xmlContent);
+            const xmlContent: string = await file.text();
+            const parsedManifest: ScormManifest = ScormParser.parseManifest(xmlContent);
             setManifest(parsedManifest);
         } catch (err) {
             setError(err instanceof Error ? err.message : 'Failed to parse manifest');
@@ -24,17 +21,14 @@ export const useScormManifest = () => {
     };
 
     const parseManifestFromUrl = async (url: string) => {
-        setLoading(true);
-        setError(null);
-
         try {
             const response = await fetch(url);
             if (!response.ok) {
                 throw new Error(`Failed to fetch manifest: ${response.statusText}`);
             }
 
-            const xmlContent = await response.text();
-            const parsedManifest = ScormParser.parseManifest(xmlContent);
+            const xmlContent: string = await response.text();
+            const parsedManifest: ScormManifest = ScormParser.parseManifest(xmlContent);
             setManifest(parsedManifest);
         } catch (err) {
             setError(err instanceof Error ? err.message : 'Failed to parse manifest');
