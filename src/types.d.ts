@@ -1,7 +1,9 @@
+import { SCORM_API_CONSTANTS } from "./shared/constants.ts";
+
 export interface IScormState {
-    'cmi.core.lesson_status': 'nie rozpoczęto' | 'incomplete' | 'completed' | 'passed' | 'failed' | 'browsed';
-    'cmi.core.score.raw': string;
-    'isInitialized': boolean;
+    [SCORM_API_CONSTANTS.LESSON_STATUS]: 'nie rozpoczęto' | 'incomplete' | 'completed' | 'passed' | 'failed' | 'browsed';
+    [SCORM_API_CONSTANTS.SCORE_RAW]: string;
+    [SCORM_API_CONSTANTS.IS_INITIALIZED]: boolean;
 }
 
 export interface IScormApi {

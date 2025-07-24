@@ -1,4 +1,5 @@
 import React from "react";
+
 import { NotificationStyled } from "./Notification.style";
 import type { NotificationType } from "../../shared/NotificationType";
 
