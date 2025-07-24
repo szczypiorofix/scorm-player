@@ -1,5 +1,6 @@
 import React from "react";
-import { StatusGroup as StatusGroupStyled } from "./ScormPlayer.style";
+
+import { StatusGroup as StatusGroupStyled, StatusKey, StatusValue } from "./ScormPlayer.style";
 
 export interface StatusGroupProps {
     title: string;
@@ -8,7 +9,7 @@ export interface StatusGroupProps {
 
 export function StatusGroup(props: StatusGroupProps): React.JSX.Element {
     return  <StatusGroupStyled>
-        <h3>{props.title}</h3>
-        <p>{props.value}</p>
+        <StatusKey>{props.title}</StatusKey>
+        <StatusValue>{props.value}</StatusValue>
     </StatusGroupStyled>
 }

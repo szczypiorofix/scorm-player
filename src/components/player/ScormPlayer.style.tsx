@@ -15,11 +15,17 @@ export const StatusGroup = styled.div`
     display: flex;
     flex-direction: row;
     align-items: center;
-
-    h3 {
-        min-width: 220px;
-    }
 `;
+
+export const StatusKey = styled.p`
+    min-width: 220px;
+    margin: 0;
+`;
+
+export const StatusValue = styled.p`
+    min-width: 120px;
+    margin: 0;
+`
 
 export const IframeContainer = styled.div`
     width: 100%;

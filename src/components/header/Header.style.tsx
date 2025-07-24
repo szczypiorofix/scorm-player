@@ -11,6 +11,7 @@ const HeaderStyled = styled.header`
     }
     h1 {
         font-size: 24px;
+        margin: 0;
     }
 `;
 

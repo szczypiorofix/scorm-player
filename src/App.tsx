@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 
 import { useScormManifest } from "./hooks/useScormManifest";
 
@@ -9,7 +9,6 @@ import { Notification } from "./components/notification/Notification";
 import { NotificationType } from "./shared/NotificationType";
 
 const App: React.FC = () => {
-    const [parsed, setParsed] = useState(false);
     const {
         loading,
         error,
@@ -18,15 +17,12 @@ const App: React.FC = () => {
     } = useScormManifest();
 
     useEffect(() => {
-        if (!parsed) {
-            parseManifestFromUrl('/scorm/imsmanifest.xml')
-                .then(() => {
-                    console.log('Manifest parsed');
-                    setParsed(true);
-                })
-                .catch(e => console.log('Error: ' + e));
-        }
-    }, [parsed, parseManifestFromUrl]);
+        parseManifestFromUrl('/scorm/imsmanifest.xml')
+            .then(() => {
+                console.log('Manifest parsed');
+            })
+            .catch(e => console.log('Error: ' + e));
+    }, []);
 
     const launchUrl = getLaunchUrl();
 

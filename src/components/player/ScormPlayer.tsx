@@ -12,7 +12,9 @@ const ScormPlayer: React.FC<IScormPlayerProps> = ({ scormFilePath }) => {
         [SCORM_API_CONSTANTS.SCORE_RAW]: '0',
         [SCORM_API_CONSTANTS.IS_INITIALIZED]: false,
     });
+
     const iframeRef = useRef<HTMLIFrameElement | null>(null);
+
     useEffect(() => {
         if (!scormFilePath) return;
 
