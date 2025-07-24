@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import { ScormParser } from "../utils/ScormParser.tsx";
+import { ScormParser } from "../utils/ScormParser";
 import type { ScormManifest } from "../types";
 
 export const useScormManifest = () => {
@@ -27,23 +27,20 @@ export const useScormManifest = () => {
         setLoading(true);
         setError(null);
 
-        setTimeout( async () => {
-            try {
-                const response = await fetch(url);
-                if (!response.ok) {
-                    throw new Error(`Failed to fetch manifest: ${response.statusText}`);
-                }
-
-                const xmlContent = await response.text();
-                const parsedManifest = ScormParser.parseManifest(xmlContent);
-                setManifest(parsedManifest);
-            } catch (err) {
-                setError(err instanceof Error ? err.message : 'Failed to parse manifest');
-            } finally {
-                setLoading(false);
+        try {
+            const response = await fetch(url);
+            if (!response.ok) {
+                throw new Error(`Failed to fetch manifest: ${response.statusText}`);
             }
-        }, 2000);
 
+            const xmlContent = await response.text();
+            const parsedManifest = ScormParser.parseManifest(xmlContent);
+            setManifest(parsedManifest);
+        } catch (err) {
+            setError(err instanceof Error ? err.message : 'Failed to parse manifest');
+        } finally {
+            setLoading(false);
+        }
     };
 
     const getLaunchUrl = (): string | null => {

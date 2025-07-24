@@ -1,6 +1,6 @@
 import React from "react";
 
-import { HeaderStyled } from "./Header.style.tsx";
+import { HeaderStyled } from "./Header.style";
 
 export function Header(): React.JSX.Element {
     return <HeaderStyled>

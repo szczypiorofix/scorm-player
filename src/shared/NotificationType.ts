@@ -3,3 +3,5 @@ export const NotificationType = {
     WARN: 1,
     ERROR: 2
 } as const;
+
+export type NotificationType = typeof NotificationType[keyof typeof NotificationType];
