@@ -9,6 +9,8 @@ export const ScormPlayer = styled.div`
 export const StatusInfo = styled.div`
     display: flex;
     flex-direction: column;
+    padding-top: 12px;
+    padding-bottom: 12px;
 `;
 
 export const StatusGroup = styled.div`
@@ -18,12 +20,12 @@ export const StatusGroup = styled.div`
 `;
 
 export const StatusKey = styled.p`
-    min-width: 220px;
+    min-width: 180px;
     margin: 0;
 `;
 
 export const StatusValue = styled.p`
-    min-width: 120px;
+    min-width: 100px;
     margin: 0;
 `
 
