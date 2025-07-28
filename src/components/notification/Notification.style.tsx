@@ -6,4 +6,24 @@ const NotificationStyled = styled.div`
     text-align: center;
 `;
 
-export { NotificationStyled };
+const NotificationParagraphInfoStyled = styled.p`
+    color: black;
+    background-color: white;
+`;
+
+const NotificationParagraphWarnStyled = styled.p`
+    color: black;
+    background-color: yellow;
+`;
+
+const NotificationParagraphErrorStyled = styled.p`
+    color: black;
+    background-color: red;
+`;
+
+export {
+    NotificationStyled,
+    NotificationParagraphInfoStyled,
+    NotificationParagraphWarnStyled,
+    NotificationParagraphErrorStyled
+};

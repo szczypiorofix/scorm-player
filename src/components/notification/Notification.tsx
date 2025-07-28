@@ -1,6 +1,10 @@
 import React from "react";
 
-import { NotificationStyled } from "./Notification.style";
+import {
+    NotificationParagraphInfoStyled,
+    NotificationParagraphWarnStyled,
+    NotificationStyled
+} from "./Notification.style";
 import type { NotificationType } from "../../shared/NotificationType";
 
 export interface NotificationProps {
@@ -9,7 +13,17 @@ export interface NotificationProps {
 }
 
 export function Notification(props: NotificationProps): React.JSX.Element {
+    const notificationSelector = (message: string, type: NotificationType) => {
+        switch(type) {
+            case 0:
+                return <NotificationParagraphInfoStyled>{message}</NotificationParagraphInfoStyled>;
+            case 1:
+                return <NotificationParagraphWarnStyled>{message}</NotificationParagraphWarnStyled>;
+            default:
+                return <NotificationParagraphInfoStyled>{message}</NotificationParagraphInfoStyled>;
+        }
+    }
     return <NotificationStyled>
-        <p>{props.message}</p>
+        { notificationSelector(props.message, props.type) }
     </NotificationStyled>
 }
