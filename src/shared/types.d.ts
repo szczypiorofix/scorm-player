@@ -6,6 +6,7 @@ export interface IScormState {
     [SCORM_API_CONSTANTS.IS_INITIALIZED]: boolean;
     [SCORM_API_CONSTANTS.SESSION_TIME]: string;
     [SCORM_API_CONSTANTS.STUDENT_NAME]: string;
+    [SCORM_API_CONSTANTS.SUSPEND_DATA]: string;
 }
 
 export interface IScormApi {
