@@ -1,4 +1,4 @@
-import type { IScormApi, IScormState } from "../types";
+import type { IScormApi, IScormState } from "../shared/types";
 import { SCORM_API_CONSTANTS } from "../shared/constants";
 
 export const createScormApi = (

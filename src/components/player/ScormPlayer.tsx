@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 
-import type { IScormPlayerProps, IScormState } from "../../types";
+import type { IScormPlayerProps, IScormState } from "../../shared/types";
 import { createScormApi } from "../../utils/ScormAPI";
 import * as SP from "./ScormPlayer.style";
 import { StatusGroup } from "./StatusGroup";

@@ -1,4 +1,4 @@
-import { SCORM_API_CONSTANTS, LESSON_COMPLETION_STATUS } from "./shared/constants";
+import { SCORM_API_CONSTANTS, LESSON_COMPLETION_STATUS } from "./constants.ts";
 
 export interface IScormState {
     [SCORM_API_CONSTANTS.LESSON_STATUS]: keyof LESSON_COMPLETION_STATUS;
@@ -9,11 +9,11 @@ export interface IScormState {
 }
 
 export interface IScormApi {
-    LMSInitialize: (param: string) => "true" | "false";
-    LMSFinish: (param: string) => "true" | "false";
+    LMSInitialize: (param: string) => ScormBoolean;
+    LMSFinish: (param: string) => ScormBoolean;
     LMSGetValue: (key: string) => string;
-    LMSSetValue: (key: string, value: unknown) => "true" | "false";
-    LMSCommit: (param: string) => "true" | "false";
+    LMSSetValue: (key: string, value: unknown) => ScormBoolean;
+    LMSCommit: (param: string) => ScormBoolean;
     LMSGetLastError: () => string;
     LMSGetErrorString: (errorCode: string) => string;
     LMSGetDiagnostic: (errorCode: string) => string;
@@ -53,6 +53,8 @@ export interface Resource {
     href: string;
     files: string[];
 }
+
+export type ScormBoolean = 'true' | 'false';
 
 declare global {
     interface Window {
