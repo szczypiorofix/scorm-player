@@ -3,9 +3,10 @@ import React from "react";
 import {
     NotificationParagraphInfoStyled,
     NotificationParagraphWarnStyled,
+    NotificationParagraphErrorStyled,
     NotificationStyled
 } from "./Notification.style";
-import type { NotificationType } from "../../shared/NotificationType";
+import { NotificationType } from "../../shared/NotificationType";
 
 export interface NotificationProps {
     message: string;
@@ -15,10 +16,10 @@ export interface NotificationProps {
 export function Notification(props: NotificationProps): React.JSX.Element {
     const notificationSelector = (message: string, type: NotificationType) => {
         switch(type) {
-            case 0:
-                return <NotificationParagraphInfoStyled>{message}</NotificationParagraphInfoStyled>;
-            case 1:
+            case NotificationType.WARN:
                 return <NotificationParagraphWarnStyled>{message}</NotificationParagraphWarnStyled>;
+            case NotificationType.ERROR:
+                return <NotificationParagraphErrorStyled>{message}</NotificationParagraphErrorStyled>;
             default:
                 return <NotificationParagraphInfoStyled>{message}</NotificationParagraphInfoStyled>;
         }

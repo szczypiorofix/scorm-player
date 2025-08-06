@@ -1,124 +1,140 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 
-import type { IScormPlayerProps, IScormState } from "../../shared/types";
-import { createScormApi } from "../../utils/ScormAPI";
+import { useSaveProgress, useLoadProgress } from '../../hooks/';
+import type { IScormApi, IScormApi2004, IScormApi_2004, IScormApi_21, IScormPlayerProps, TrainingFormat } from "../../shared/types";
+import { COURSE_ID, DEFAULT_SCORM_2004_STATE, DEFAULT_SCORM_21_STATE, SCORM_API_CONSTANTS, TRAINING_FORMAT } from "../../shared/constants";
 import * as SP from "./ScormPlayer.style";
 import { StatusGroup } from "./StatusGroup";
-import {LESSON_COMPLETION_STATUS, SCORM_API_CONSTANTS} from "../../shared/constants";
+import { getTrainingVersion } from '../../utils/TrainingVersionParser';
+import { createScormApi21 } from "../../utils/ScormAPI21";
+import { Notification } from "../notification/Notification";
+import { NotificationType } from '../../shared/NotificationType';
+import { createScormApi2004 } from '../../utils/ScormAPI2004';
 
-export const COURSE_ID = '1';
-
-function saveDataToBackend(userId: string, courseId: string, scormData: unknown) {
-    const url = `http://localhost:3000/api/progress/${userId}/${courseId}`;
-
-    fetch(url, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(scormData),
-        })
-        .then(response => response.json())
-        .then(data => console.log('Sukces:', data))
-        .catch((error) => console.error('Błąd:', error));
-}
-
-async function loadDataFromBackend(userId: string, courseId: string) {
-    const url = `http://localhost:3000/api/progress/${userId}/${courseId}`;
-
-    try {
-        const response = await fetch(url);
-        if (!response.ok) {
-            if (response.status === 404) {
-                console.log("Brak wcześniejszego postępu, startujemy od zera.");
-                return null;
-            }
-            throw new Error('Błąd sieci lub serwera');
-        }
-        const data = await response.json();
-        console.log('Pobrano dane:', data);
-        return data;
-    } catch (error) {
-        console.error('Błąd pobierania danych:', error);
-        return null;
-    }
-}
-
-const ScormPlayer: React.FC<IScormPlayerProps> = ({ scormFilePath }) => {
-    const [scormState, setScormState] = useState<IScormState>({
-        [SCORM_API_CONSTANTS.LESSON_STATUS]: LESSON_COMPLETION_STATUS.NOT_STARTED,
-        [SCORM_API_CONSTANTS.SCORE_RAW]: '0',
-        [SCORM_API_CONSTANTS.IS_INITIALIZED]: false,
-        [SCORM_API_CONSTANTS.SESSION_TIME]: '0',
-        [SCORM_API_CONSTANTS.STUDENT_NAME]: 'Todd',
-        [SCORM_API_CONSTANTS.SUSPEND_DATA]: '',
+const ScormPlayer: React.FC<IScormPlayerProps> = (props: IScormPlayerProps) => {
+    const [scormState, setScormState] = useState<IScormApi_21 & IScormApi_2004>({
+        ...DEFAULT_SCORM_21_STATE,
+        ...DEFAULT_SCORM_2004_STATE
     });
 
     const iframeRef = useRef<HTMLIFrameElement | null>(null);
+    const studentName: string = scormState.studentName;
+
+    const { data: initialScormData, isLoading: isLoadingProgress, error: loadError } = useLoadProgress({
+        userId: studentName,
+        courseId: COURSE_ID,
+    });
+
+    const { saveProgress, isLoading: isSavingProgress, error: saveError } = useSaveProgress({
+        userId: studentName,
+        courseId: COURSE_ID,
+    });
+
+    const handleStateChangeForScorm21 = useCallback((state: IScormApi_21) => {
+        console.log('[REACT STATE UPDATE]: ', state);
+        setScormState(prevState => {
+            const updatedState = { ...prevState, ...state };
+            saveProgress(updatedState);
+            return updatedState;
+        });
+    }, [saveProgress]);
+
+    const handleStateChangeForScorm2004 = useCallback((state: IScormApi_2004) => {
+        console.log('[REACT STATE UPDATE]: ', state);
+        setScormState(prevState => {
+            const updatedState = { ...prevState, ...state };
+            saveProgress(updatedState);
+            return updatedState;
+        });
+    }, [saveProgress]);
 
     useEffect(() => {
-        if (!scormFilePath) return;
+        if (!props.scormFilePath || isLoadingProgress) {
+            return;
+        }
 
-        console.log("Setting up SCORM environment for:", scormFilePath);
+        const trainingFormat: TrainingFormat = getTrainingVersion(props.manifest.version);
+        console.log('Training format: ' + trainingFormat);
+        let scormApi: IScormApi | IScormApi2004 | null = null;
 
-        const handleStateChange = (key: keyof IScormState, value: unknown) => {
-            console.log(`[REACT STATE UPDATE]: ${key} ->`, value);
-            setScormState(prevState => {
-                saveDataToBackend(prevState[SCORM_API_CONSTANTS.STUDENT_NAME], COURSE_ID, { ...prevState, [key]: value });
-                return { ...prevState, [key]: value };
-            });
-        };
+        switch(trainingFormat) {
+            case TRAINING_FORMAT.SCORM_2_1:
+                    scormApi = createScormApi21(
+                        handleStateChangeForScorm21,
+                        initialScormData as IScormApi_21,
+                        () => { console.log('Progress saved via Commit.'); }
+                    );
+                    window.API = scormApi;
+                break;
 
-        const loadedData = loadDataFromBackend(scormState[SCORM_API_CONSTANTS.STUDENT_NAME], COURSE_ID);
-        loadedData
-            .then((data) => {
-                console.log('Loaded data: ', data);
-
-                const scormApi = createScormApi(
-                    handleStateChange,
-                    data,
-                    () => { console.log('Progress saved.') }
-                );
-                window.API = scormApi;
-                window.API_1484_11 = scormApi;
-            })
-            .catch(err => console.error(err));
+            default:
+                    scormApi = createScormApi2004(
+                        handleStateChangeForScorm2004,
+                        initialScormData as IScormApi_2004,
+                        () => { console.log('Progress saved via Commit.'); }
+                    );
+                    window.API_1484_11 = scormApi;
+                break;
+        }
 
         console.log("SCORM API created and attached to window.");
 
         return () => {
-            console.log("Cleaning up SCORM environment for:", scormFilePath);
-
-            if (window.API?.LMSGetValue(SCORM_API_CONSTANTS.IS_INITIALIZED) === 'true') {
-                window.API.LMSFinish("");
+            if (trainingFormat === TRAINING_FORMAT.SCORM_2_1) {
+                if (window.API?.LMSGetValue(SCORM_API_CONSTANTS.IS_INITIALIZED) === 'true') {
+                    window.API.LMSFinish("");
+                }
             }
-            if (window.API_1484_11?.LMSGetValue(SCORM_API_CONSTANTS.IS_INITIALIZED) === 'true') {
-                window.API_1484_11.LMSFinish("");
+            if (trainingFormat === TRAINING_FORMAT.SCORM_2004) {
+                if (window.API_1484_11?.GetValue(SCORM_API_CONSTANTS.IS_INITIALIZED) === 'true') {
+                    window.API_1484_11.Terminate("");
+                }
             }
-
+            
             delete window.API;
             delete window.API_1484_11;
             console.log("SCORM API cleaned up.");
         };
-    }, [scormFilePath]);
+    }, [
+        props.scormFilePath,
+        isLoadingProgress,
+        initialScormData,
+        props.manifest.version,
+        handleStateChangeForScorm21,
+        handleStateChangeForScorm2004
+    ]);
+
+    if (isLoadingProgress) {
+        return <SP.ScormPlayer>Ładowanie danych kursu... ⏳</SP.ScormPlayer>;
+    }
+
+    if (loadError) {
+        return <SP.ScormPlayer>Wystąpił błąd: {loadError.message} 😥</SP.ScormPlayer>;
+    }
 
     return (
         <SP.ScormPlayer>
             <SP.StatusInfo>
-                <StatusGroup title={"Uczestnik"} value={scormState[SCORM_API_CONSTANTS.STUDENT_NAME]}/>
+                <StatusGroup title={"Uczestnik"} value={scormState.studentName}/>
                 <StatusGroup title={"Status Inicjalizacji"} value={scormState.isInitialized ? 'Aktywne' : 'Nieaktywne'}/>
-                <StatusGroup title={"Status Ukończenia"} value={scormState[SCORM_API_CONSTANTS.LESSON_STATUS]}/>
-                <StatusGroup title={"Wynik"} value={scormState[SCORM_API_CONSTANTS.SCORE_RAW]+"%"}/>
-                <StatusGroup title={"Czas sesji"} value={scormState[SCORM_API_CONSTANTS.SESSION_TIME]}/>
+                <StatusGroup title={"Status Ukończenia"} value={scormState.lessonStatus}/>
+                { scormState.completionStatus && <StatusGroup title={"Zaliczenie"} value={scormState.successStatus}/>}
+                { !(scormState.maxScore && scormState.minScore) && (scormState.score || scormState.rawScore) 
+                    && <StatusGroup title={"Wynik"} value={`${scormState.score || scormState.rawScore}%`}/>}
+                { scormState.maxScore && scormState.minScore
+                    && <StatusGroup title={"Wynik"} value={`${scormState.rawScore}% (${scormState.minScore}/${scormState.maxScore})`}/>}
+                <StatusGroup title={"Czas sesji"} value={scormState.sessionTime}/>
+                {isSavingProgress && <span>Zapisywanie...</span>}
+                {saveError && <Notification message={"Save data error!"} type={NotificationType.ERROR}/> }
             </SP.StatusInfo>
             <SP.IframeContainer>
-                {scormFilePath && (
+                {props.scormFilePath && (
                     <SP.Iframe
                         ref={iframeRef}
-                        src={scormFilePath}
+                        src={props.scormFilePath}
                         title="SCORM Content Player"
                         allowFullScreen
-                    ></SP.Iframe>
+                    />
                 )}
             </SP.IframeContainer>
         </SP.ScormPlayer>

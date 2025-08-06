@@ -16,7 +16,7 @@ export class ScormParser {
         }
 
         const identifier = manifest.getAttribute('identifier') || '';
-        const version = manifest.getAttribute('version') || '1.2';
+        const version = this.getTextContent(doc, 'schemaversion') || '1.2';
 
         const title = this.getTextContent(doc, 'title') || 'Untitled Course';
         const description = this.getTextContent(doc, 'description');
@@ -38,9 +38,7 @@ export class ScormParser {
     }
 
     static getLaunchUrl(manifest: ScormManifest): string | null {
-        const defaultOrg = manifest.organizations.find(
-            org => org.identifier === manifest.defaultOrganization
-        ) || manifest.organizations[0];
+        const defaultOrg = manifest.organizations.find(org => org.identifier === manifest.defaultOrganization) || manifest.organizations[0];
 
         if (!defaultOrg || defaultOrg.items.length === 0) {
             return null;

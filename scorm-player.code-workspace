@@ -1,0 +1,30 @@
+{
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+		"settings": {
+		"editor.fontFamily": "Noto Mono, monospace",
+		"editor.lineHeight": 16,
+		"editor.fontLigatures": true,
+		"editor.mouseWheelZoom": true,
+		"editor.minimap.showSlider": "always",
+		"editor.cursorWidth": 7,
+		"editor.autoIndent": "full",
+		"editor.showUnused": true,
+		"editor.tabSize": 4,
+		"editor.cursorBlinking": "phase",
+		"files.autoGuessEncoding": false,
+		"files.encoding": "utf8",
+		"files.exclude": {
+			"**/.git": true,
+			"**/.svn": true,
+			"**/.hg": true,
+			"**/CVS": true,
+			"**/.DS_Store": true,
+			"**/node_modules": true,
+			"**/dist": true
+		},
+	}
+}

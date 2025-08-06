@@ -1,5 +1,14 @@
 import { SCORM_API_CONSTANTS, LESSON_COMPLETION_STATUS } from "./constants.ts";
 
+export interface ITrainingData {
+    lessonStatus: string;
+    score: string;
+    isInitialized: boolean;
+    studentName: string;
+    suspendData: string;
+    sessionTime: string;
+}
+
 export interface IScormState {
     [SCORM_API_CONSTANTS.LESSON_STATUS]: keyof LESSON_COMPLETION_STATUS;
     [SCORM_API_CONSTANTS.SCORE_RAW]: string;
@@ -9,20 +18,60 @@ export interface IScormState {
     [SCORM_API_CONSTANTS.SUSPEND_DATA]: string;
 }
 
+export interface IScormApi_21 {
+    lessonStatus: string;
+    score: string;
+    isInitialized: boolean;
+    studentName: string;
+    suspendData: string;
+    sessionTime: string;
+    exit: string;
+    mode: string;
+}
+
+export interface IScormApi_2004 {
+    lessonStatus: string;
+    score: string;
+    isInitialized: boolean;
+    studentName: string;
+    suspendData: string;
+    sessionTime: string;
+    exit: string;
+    rawScore: string;
+    maxScore: string;
+    minScore: string;
+    scaledScore: string;
+    successStatus: string;
+    completionStatus: string;
+    sessionTime: string;
+}
+
 export interface IScormApi {
     LMSInitialize: (param: string) => ScormBoolean;
     LMSFinish: (param: string) => ScormBoolean;
     LMSGetValue: (key: string) => string;
-    LMSSetValue: (key: string, value: unknown) => ScormBoolean;
+    LMSSetValue: (key: string, value: string) => ScormBoolean;
     LMSCommit: (param: string) => ScormBoolean;
     LMSGetLastError: () => string;
     LMSGetErrorString: (errorCode: string) => string;
     LMSGetDiagnostic: (errorCode: string) => string;
-    _getState: () => { [key: string]: unknown },
+    _getState: () => IScormApi_21,
 }
+
+export interface IScormApi2004 {
+    Initialize: (param: string) => ScormBoolean;
+    Terminate: (param: string) => ScormBoolean;
+    GetValue: (key: string) => string;
+    SetValue: (key: string, value: string) => ScormBoolean;
+    SetScore: (key: string, value: string) => ScormBoolean;
+    Commit: (param: string) => ScormBoolean;
+    GetLastError: () => string;
+}
+
 
 export interface IScormPlayerProps {
     scormFilePath: string;
+    manifest: ScormManifest;
 }
 
 export interface ScormManifest {
@@ -57,9 +106,13 @@ export interface Resource {
 
 export type ScormBoolean = 'true' | 'false';
 
+export type Dictionary = {[key: string]: string };
+
+export type TrainingFormat = typeof TRAINING_FORMAT[keyof typeof TRAINING_FORMAT];
+
 declare global {
     interface Window {
         API?: IScormApi;
-        API_1484_11?: IScormApi;
+        API_1484_11?: IScormApi2004;
     }
 }
