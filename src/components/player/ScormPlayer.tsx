@@ -55,7 +55,7 @@ const ScormPlayer: React.FC<IScormPlayerProps> = (props: IScormPlayerProps) => {
 
         const trainingFormat: TrainingFormat = getTrainingVersion(props.manifest.version);
         console.log('Training format: ' + trainingFormat);
-        let scormApi: IScormApi | IScormApi2004 | null = null;
+        let scormApi: IScormApi | IScormApi2004 | null;
 
         switch(trainingFormat) {
             case TRAINING_FORMAT.SCORM_1_2:
