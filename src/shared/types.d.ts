@@ -1,23 +1,3 @@
-import { SCORM_API_CONSTANTS, LESSON_COMPLETION_STATUS } from "./constants.ts";
-
-// export interface ITrainingData {
-//     lessonStatus: string;
-//     score: string;
-//     isInitialized: boolean;
-//     studentName: string;
-//     suspendData: string;
-//     sessionTime: string;
-// }
-//
-// export interface IScormState {
-//     [SCORM_API_CONSTANTS.LESSON_STATUS]: keyof LESSON_COMPLETION_STATUS;
-//     [SCORM_API_CONSTANTS.SCORE_RAW]: string;
-//     [SCORM_API_CONSTANTS.IS_INITIALIZED]: boolean;
-//     [SCORM_API_CONSTANTS.SESSION_TIME]: string;
-//     [SCORM_API_CONSTANTS.STUDENT_NAME]: string;
-//     [SCORM_API_CONSTANTS.SUSPEND_DATA]: string;
-// }
-
 export interface IScormApi_1_2 {
     lessonStatus: string;
     score: string;
