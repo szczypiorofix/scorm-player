@@ -1,10 +1,10 @@
 import { DEFAULT_SCORM_21_STATE, scorm_21_objectMap } from "../shared/constants";
-import type { IScormApi, IScormApi_21 } from "../shared/types";
+import type { IScormApi, IScormApi_1_2 } from "../shared/types";
 import { getStateKeyByDictionaryKey, updateStateValueByKey } from "./ScormObjectParser";
 
 /**
  * 
-    SCORM 2.1 parameters:
+    SCORM 1.2 parameters:
     'cmi.core.lesson_status': 'incomplete',
     'cmi.core.score.raw': '0',
     'isInitialized: true,
@@ -14,12 +14,12 @@ import { getStateKeyByDictionaryKey, updateStateValueByKey } from "./ScormObject
     'cmi.core.exit': 'suspend'
  */
 
-export const createScormApi21 = (
-    onStateChange: (state: IScormApi_21) => void,
-    initialData: Partial<IScormApi_21> | null = null,
+export const createScormApi12 = (
+    onStateChange: (state: IScormApi_1_2) => void,
+    initialData: Partial<IScormApi_1_2> | null = null,
     saveProgress: () => void
 ): IScormApi => {
-    let state: IScormApi_21 = {
+    let state: IScormApi_1_2 = {
         ...DEFAULT_SCORM_21_STATE,
         ...initialData,
     };
@@ -56,14 +56,14 @@ export const createScormApi21 = (
             return "true";
         },
         LMSGetValue: (key) => {
-            const v = getStateKeyByDictionaryKey(state, key as keyof IScormApi_21, scorm_21_objectMap);
-            console.log(`LMSGetValue: [KEY: ${key}]: ${v}=${state[v as keyof IScormApi_21]}`);
-            return state[v as keyof IScormApi_21];
+            const v = getStateKeyByDictionaryKey(state, key as keyof IScormApi_1_2, scorm_21_objectMap);
+            console.log(`LMSGetValue: [KEY: ${key}]: ${v}=${state[v as keyof IScormApi_1_2]}`);
+            return state[v as keyof IScormApi_1_2];
         },
         LMSSetValue: (key, value) => {
             console.log('LMSSetValue: Update key ' + key + ' value: ' + value)
             
-            state = updateStateValueByKey<IScormApi_21, keyof IScormApi_21>(state, key as keyof IScormApi_21, value, scorm_21_objectMap);
+            state = updateStateValueByKey<IScormApi_1_2, keyof IScormApi_1_2>(state, key as keyof IScormApi_1_2, value, scorm_21_objectMap);
             onStateChange(state);
 
             return "true";

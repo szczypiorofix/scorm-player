@@ -1,4 +1,4 @@
-import type { Dictionary, IScormApi_2004, IScormApi_21 } from "./types";
+import type { Dictionary, IScormApi_2004, IScormApi_1_2 } from "./types";
 
 export const SCORM_API_CONSTANTS = {
     LESSON_STATUS: 'cmi.core.lesson_status',
@@ -26,7 +26,7 @@ export const TRAINING_CONTAINER_FOLDER_NAME = 'scorm';
 
 export const COURSE_ID = '1';
 
-export const DEFAULT_SCORM_21_STATE: IScormApi_21 = {
+export const DEFAULT_SCORM_21_STATE: IScormApi_1_2 = {
         lessonStatus: '',
         isInitialized: false,
         score: '0',
@@ -54,7 +54,7 @@ export const DEFAULT_SCORM_2004_STATE: IScormApi_2004 = {
 }
 
 export const TRAINING_FORMAT = {
-    SCORM_2_1: 'SCORM_2_1',
+    SCORM_1_2: 'SCORM_1_2',
     SCORM_2004: 'SCORM_2004',
     XAPI: 'XAPI',
 } as const;

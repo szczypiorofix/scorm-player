@@ -1,24 +1,24 @@
 import { SCORM_API_CONSTANTS, LESSON_COMPLETION_STATUS } from "./constants.ts";
 
-export interface ITrainingData {
-    lessonStatus: string;
-    score: string;
-    isInitialized: boolean;
-    studentName: string;
-    suspendData: string;
-    sessionTime: string;
-}
+// export interface ITrainingData {
+//     lessonStatus: string;
+//     score: string;
+//     isInitialized: boolean;
+//     studentName: string;
+//     suspendData: string;
+//     sessionTime: string;
+// }
+//
+// export interface IScormState {
+//     [SCORM_API_CONSTANTS.LESSON_STATUS]: keyof LESSON_COMPLETION_STATUS;
+//     [SCORM_API_CONSTANTS.SCORE_RAW]: string;
+//     [SCORM_API_CONSTANTS.IS_INITIALIZED]: boolean;
+//     [SCORM_API_CONSTANTS.SESSION_TIME]: string;
+//     [SCORM_API_CONSTANTS.STUDENT_NAME]: string;
+//     [SCORM_API_CONSTANTS.SUSPEND_DATA]: string;
+// }
 
-export interface IScormState {
-    [SCORM_API_CONSTANTS.LESSON_STATUS]: keyof LESSON_COMPLETION_STATUS;
-    [SCORM_API_CONSTANTS.SCORE_RAW]: string;
-    [SCORM_API_CONSTANTS.IS_INITIALIZED]: boolean;
-    [SCORM_API_CONSTANTS.SESSION_TIME]: string;
-    [SCORM_API_CONSTANTS.STUDENT_NAME]: string;
-    [SCORM_API_CONSTANTS.SUSPEND_DATA]: string;
-}
-
-export interface IScormApi_21 {
+export interface IScormApi_1_2 {
     lessonStatus: string;
     score: string;
     isInitialized: boolean;
@@ -43,7 +43,6 @@ export interface IScormApi_2004 {
     scaledScore: string;
     successStatus: string;
     completionStatus: string;
-    sessionTime: string;
 }
 
 export interface IScormApi {
@@ -55,7 +54,7 @@ export interface IScormApi {
     LMSGetLastError: () => string;
     LMSGetErrorString: (errorCode: string) => string;
     LMSGetDiagnostic: (errorCode: string) => string;
-    _getState: () => IScormApi_21,
+    _getState: () => IScormApi_12,
 }
 
 export interface IScormApi2004 {
