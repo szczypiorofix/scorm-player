@@ -1,5 +1,5 @@
-import { DEFAULT_SCORM_2004_STATE, scorm_2004_objectMap } from "../shared/constants";
-import type { IScormApi2004, IScormApi_2004 } from "../shared/types";
+import {DEFAULT_SCORM_2004_STATE, scorm_2004_objectMap, SCORM_BOOLEAN} from "../features/scorm/scorm.constants";
+import type { IScormApi_2004, ScormStateVersion2004v2 } from "../features/scorm/scorm.types";
 import { getStateKeyByDictionaryKey, updateStateValueByKey } from "./ScormObjectParser";
 
 /**
@@ -35,7 +35,7 @@ export const createScormApi2004 = (
     onStateChange: (state: IScormApi_2004) => void,
     initialData: Partial<IScormApi_2004> | null = null,
     saveProgress: () => void
-): IScormApi2004 => {
+): ScormStateVersion2004v2 => {
     let state: IScormApi_2004 = {
         ...DEFAULT_SCORM_2004_STATE,
         ...initialData,
@@ -44,7 +44,7 @@ export const createScormApi2004 = (
 
     return {
         Initialize: (param) => {
-            if (isInitialized) return "false";
+            if (isInitialized) return SCORM_BOOLEAN.FALSE;
             isInitialized = true;
             console.log("LMS (Parent) Event: Initialize. Param: " + param);
 
@@ -56,10 +56,10 @@ export const createScormApi2004 = (
 
             onStateChange(state);
 
-            return "true";
+            return SCORM_BOOLEAN.TRUE;
         },
         Terminate: (param) => {
-            if (!isInitialized) return "false";
+            if (!isInitialized) return SCORM_BOOLEAN.FALSE;
             isInitialized = false;
             console.log("LMS (Parent) Event: Terminate. Param: " + param);
 
@@ -69,7 +69,7 @@ export const createScormApi2004 = (
             // save progress for training
             saveProgress();
 
-            return "true";
+            return SCORM_BOOLEAN.TRUE;
         },
         GetValue: (key) => {
             const v = getStateKeyByDictionaryKey(state, key as keyof IScormApi_2004, scorm_2004_objectMap);
@@ -81,14 +81,14 @@ export const createScormApi2004 = (
             
             state = updateStateValueByKey<IScormApi_2004, keyof IScormApi_2004>(state, key as keyof IScormApi_2004, value, scorm_2004_objectMap);
             onStateChange(state);
-            return "true";
+            return SCORM_BOOLEAN.TRUE;
         },
         Commit(param) {
             console.log("LMS (Parent, 2004 version) Event: Commit. Param: " + param);
-            return "true";
+            return SCORM_BOOLEAN.TRUE;
         },
         GetLastError: () => {
             return "0";
         },
-    } as IScormApi2004;
+    } as ScormStateVersion2004v2;
 };

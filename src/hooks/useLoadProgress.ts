@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 
 import { API_PROGRESS_URL } from '../shared/constants';
-import type { IScormApi2004, IScormApi_1_2 } from '../shared/types';
+import type { IScormApi_1_2, IScormApi_2004 } from '../features/scorm/scorm.types';
 
 interface UseLoadProgressProps {
   userId: string;
@@ -9,7 +9,7 @@ interface UseLoadProgressProps {
 }
 
 export const useLoadProgress = ({ userId, courseId }: UseLoadProgressProps) => {
-  const [data, setData] = useState<Partial<IScormApi_1_2 | IScormApi2004> | null>(null);
+  const [data, setData] = useState<Partial<IScormApi_1_2 | IScormApi_2004> | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<Error | null>(null);
 

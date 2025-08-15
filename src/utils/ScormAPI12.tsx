@@ -1,5 +1,5 @@
-import { DEFAULT_SCORM_21_STATE, scorm_21_objectMap } from "../shared/constants";
-import type { IScormApi, IScormApi_1_2 } from "../shared/types";
+import {DEFAULT_SCORM_12_STATE, scorm_12_objectMap, SCORM_BOOLEAN} from "../features/scorm/scorm.constants";
+import type { IScormApi_1_2, ScormStateVersion12 } from "../features/scorm/scorm.types";
 import { getStateKeyByDictionaryKey, updateStateValueByKey } from "./ScormObjectParser";
 
 /**
@@ -18,9 +18,9 @@ export const createScormApi12 = (
     onStateChange: (state: IScormApi_1_2) => void,
     initialData: Partial<IScormApi_1_2> | null = null,
     saveProgress: () => void
-): IScormApi => {
+): ScormStateVersion12 => {
     let state: IScormApi_1_2 = {
-        ...DEFAULT_SCORM_21_STATE,
+        ...DEFAULT_SCORM_12_STATE,
         ...initialData,
     };
 
@@ -28,7 +28,7 @@ export const createScormApi12 = (
 
     return {
         LMSInitialize: (param) => {
-            if (isInitialized) return "false";
+            if (isInitialized) return SCORM_BOOLEAN.FALSE;
             isInitialized = true;
             console.log("LMS (Parent) Event: LMSInitialize. Param: " + param);
 
@@ -40,10 +40,10 @@ export const createScormApi12 = (
 
             onStateChange(state);
 
-            return "true";
+            return SCORM_BOOLEAN.TRUE;
         },
         LMSFinish: (param) => {
-            if (!isInitialized) return "false";
+            if (!isInitialized) return SCORM_BOOLEAN.FALSE;
             isInitialized = false;
             console.log("LMS (Parent) Event: LMSFinish. Param: " + param);
 
@@ -53,24 +53,24 @@ export const createScormApi12 = (
             // save progress for training
             saveProgress();
 
-            return "true";
+            return SCORM_BOOLEAN.TRUE;
         },
         LMSGetValue: (key) => {
-            const v = getStateKeyByDictionaryKey(state, key as keyof IScormApi_1_2, scorm_21_objectMap);
+            const v = getStateKeyByDictionaryKey(state, key as keyof IScormApi_1_2, scorm_12_objectMap);
             console.log(`LMSGetValue: [KEY: ${key}]: ${v}=${state[v as keyof IScormApi_1_2]}`);
             return state[v as keyof IScormApi_1_2];
         },
         LMSSetValue: (key, value) => {
             console.log('LMSSetValue: Update key ' + key + ' value: ' + value)
             
-            state = updateStateValueByKey<IScormApi_1_2, keyof IScormApi_1_2>(state, key as keyof IScormApi_1_2, value, scorm_21_objectMap);
+            state = updateStateValueByKey<IScormApi_1_2, keyof IScormApi_1_2>(state, key as keyof IScormApi_1_2, value, scorm_12_objectMap);
             onStateChange(state);
 
-            return "true";
+            return SCORM_BOOLEAN.TRUE;
         },
         LMSCommit: (param) => {
             console.log("LMS (Parent) Event: LMSCommit. Param: " + param);
-            return "true";
+            return SCORM_BOOLEAN.TRUE;
         },
         LMSGetLastError: () => {
             return "0";
@@ -86,5 +86,5 @@ export const createScormApi12 = (
             return "No diagnostic information";
         },
         _getState: () => state,
-    } as IScormApi;
+    } as ScormStateVersion12;
 };

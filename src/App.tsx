@@ -1,13 +1,12 @@
 import React, { useEffect } from 'react';
 
-import { useScormManifest } from "./hooks";
-
 import ScormPlayer from './components/player/ScormPlayer';
 import { Header } from "./components/header/Header";
 import { AppStyled } from "./App.style";
 import { Notification } from "./components/notification/Notification";
-import { NotificationType } from "./shared/NotificationType";
+import { NotificationType } from "./components/notification/Notification";
 import { TRAINING_CONTAINER_FOLDER_NAME } from './shared/constants';
+import { useScormManifest } from './features/scorm/hooks/useScormManifest';
 
 function App(): React.JSX.Element {
     const {

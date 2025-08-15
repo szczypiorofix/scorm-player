@@ -1,7 +1,7 @@
 import { useState, useCallback } from 'react';
 
 import { API_PROGRESS_URL } from '../shared/constants';
-import type { IScormApi2004, IScormApi_1_2 } from '../shared/types';
+import type { IScormApi_1_2, IScormApi_2004 } from '../features/scorm/scorm.types';
 
 interface UseSaveProgressProps {
   userId: string;
@@ -11,7 +11,7 @@ interface UseSaveProgressProps {
 export const useSaveProgress = ({ userId, courseId }: UseSaveProgressProps) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<Error | null>(null);
-  const [data, setData] = useState<IScormApi_1_2 | IScormApi2004 | null>(null);
+  const [data, setData] = useState<IScormApi_1_2 | IScormApi_2004 | null>(null);
 
   const saveProgress = useCallback(async (scormData: unknown) => {
     setIsLoading(true);

@@ -1,7 +1,7 @@
 import { useState } from "react";
 
-import { ScormParser } from "../utils/ScormParser";
-import type { ScormManifest } from "../shared/types";
+import { ScormParser } from "../../../utils/ScormParser";
+import type { ScormManifest } from "../scorm.types";
 
 export const useScormManifest = () => {
     const [manifest, setManifest] = useState<ScormManifest | null>(null);

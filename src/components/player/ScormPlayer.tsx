@@ -1,19 +1,21 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 
 import { useSaveProgress, useLoadProgress } from '../../hooks/';
-import type { IScormApi, IScormApi2004, IScormApi_2004, IScormApi_1_2, IScormPlayerProps, TrainingFormat } from "../../shared/types";
-import { COURSE_ID, DEFAULT_SCORM_2004_STATE, DEFAULT_SCORM_21_STATE, SCORM_API_CONSTANTS, TRAINING_FORMAT } from "../../shared/constants";
+import type { IScormPlayerProps } from "../../shared/types";
+import { COURSE_ID, SCORM_API_CONSTANTS } from "../../shared/constants";
 import * as SP from "./ScormPlayer.style";
 import { StatusGroup } from "./StatusGroup";
 import { getTrainingVersion } from '../../utils/TrainingVersionParser';
 import { createScormApi12 } from "../../utils/ScormAPI12";
 import { Notification } from "../notification/Notification";
-import { NotificationType } from '../../shared/NotificationType';
+import { NotificationType } from '../notification/Notification';
 import { createScormApi2004 } from '../../utils/ScormAPI2004';
+import type { IScormApi_1_2, IScormApi_2004, ScormStateVersion12, ScormStateVersion2004v2, TrainingFormat } from '../../features/scorm/scorm.types';
+import { DEFAULT_SCORM_2004_STATE, DEFAULT_SCORM_12_STATE, TRAINING_FORMAT } from '../../features/scorm/scorm.constants';
 
 const ScormPlayer: React.FC<IScormPlayerProps> = (props: IScormPlayerProps) => {
     const [scormState, setScormState] = useState<IScormApi_1_2 & IScormApi_2004>({
-        ...DEFAULT_SCORM_21_STATE,
+        ...DEFAULT_SCORM_12_STATE,
         ...DEFAULT_SCORM_2004_STATE
     });
 
@@ -55,7 +57,7 @@ const ScormPlayer: React.FC<IScormPlayerProps> = (props: IScormPlayerProps) => {
 
         const trainingFormat: TrainingFormat = getTrainingVersion(props.manifest.version);
         console.log('Training format: ' + trainingFormat);
-        let scormApi: IScormApi | IScormApi2004 | null;
+        let scormApi: ScormStateVersion12 | ScormStateVersion2004v2 | null;
 
         switch(trainingFormat) {
             case TRAINING_FORMAT.SCORM_1_2:
