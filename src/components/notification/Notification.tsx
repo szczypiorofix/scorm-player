@@ -6,7 +6,14 @@ import {
     NotificationParagraphErrorStyled,
     NotificationStyled
 } from "./Notification.style";
-import { NotificationType } from "../../shared/NotificationType";
+
+export const NotificationType = {
+    INFO: 0,
+    WARN: 1,
+    ERROR: 2
+} as const;
+
+export type NotificationType = typeof NotificationType[keyof typeof NotificationType];
 
 export interface NotificationProps {
     message: string;
