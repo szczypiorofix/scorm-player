@@ -1,4 +1,4 @@
-import type { SCORM_BOOLEAN, TRAINING_FORMAT } from "./scorm.constants";
+import type {SCORM_BOOLEAN, TRAINING_FORMAT} from "./scorm.constants";
 
 export type ScormBoolean = (typeof SCORM_BOOLEAN)[keyof typeof SCORM_BOOLEAN];
 

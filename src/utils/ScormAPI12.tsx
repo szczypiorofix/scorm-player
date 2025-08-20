@@ -1,4 +1,4 @@
-import {DEFAULT_SCORM_12_STATE, scorm_12_objectMap, SCORM_BOOLEAN} from "../features/scorm/scorm.constants";
+import { DEFAULT_SCORM_12_STATE, scorm_12_objectMap, SCORM_BOOLEAN } from "../features/scorm/scorm.constants";
 import type { IScormApi_1_2, ScormStateVersion12 } from "../features/scorm/scorm.types";
 import { getStateKeyByDictionaryKey, updateStateValueByKey } from "./ScormObjectParser";
 
@@ -14,11 +14,11 @@ import { getStateKeyByDictionaryKey, updateStateValueByKey } from "./ScormObject
     'cmi.core.exit': 'suspend'
  */
 
-export const createScormApi12 = (
+export function createScormApi12(
     onStateChange: (state: IScormApi_1_2) => void,
     initialData: Partial<IScormApi_1_2> | null = null,
     saveProgress: () => void
-): ScormStateVersion12 => {
+): ScormStateVersion12 {
     let state: IScormApi_1_2 = {
         ...DEFAULT_SCORM_12_STATE,
         ...initialData,
@@ -87,4 +87,4 @@ export const createScormApi12 = (
         },
         _getState: () => state,
     } as ScormStateVersion12;
-};
+}

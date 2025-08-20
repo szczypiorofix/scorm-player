@@ -1,4 +1,4 @@
-import {DEFAULT_SCORM_2004_STATE, scorm_2004_objectMap, SCORM_BOOLEAN} from "../features/scorm/scorm.constants";
+import { DEFAULT_SCORM_2004_STATE, scorm_2004_objectMap, SCORM_BOOLEAN } from "../features/scorm/scorm.constants";
 import type { IScormApi_2004, ScormStateVersion2004v2 } from "../features/scorm/scorm.types";
 import { getStateKeyByDictionaryKey, updateStateValueByKey } from "./ScormObjectParser";
 
@@ -31,11 +31,11 @@ import { getStateKeyByDictionaryKey, updateStateValueByKey } from "./ScormObject
     'cmi.interactions.0.timestamp': '2025-07-31T16:44:37.0+02'
  */
 
-export const createScormApi2004 = (
+export function createScormApi2004 (
     onStateChange: (state: IScormApi_2004) => void,
     initialData: Partial<IScormApi_2004> | null = null,
     saveProgress: () => void
-): ScormStateVersion2004v2 => {
+): ScormStateVersion2004v2 {
     let state: IScormApi_2004 = {
         ...DEFAULT_SCORM_2004_STATE,
         ...initialData,
@@ -91,4 +91,4 @@ export const createScormApi2004 = (
             return "0";
         },
     } as ScormStateVersion2004v2;
-};
+}
