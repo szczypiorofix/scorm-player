@@ -1,4 +1,4 @@
-namespace ScormVersion11 {
+export namespace ScormV12 {
     export interface ApiSignature {
         LMSInitialize(arg: string): boolean;
         LMSFinish(arg: string): boolean;
