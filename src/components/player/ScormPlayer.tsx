@@ -10,8 +10,9 @@ import { createScormApi12 } from "../../utils/ScormAPI12";
 import { Notification } from "../notification/Notification";
 import { NotificationType } from '../notification/Notification';
 import { createScormApi2004 } from '../../utils/ScormAPI2004';
-import type { IScormApi_1_2, IScormApi_2004, ScormStateVersion12, ScormStateVersion2004v2, TrainingFormat } from '../../features/scorm/scorm.types';
+import type { IScormApi_1_2, IScormApi_2004, ScormStateVersion2004v2, TrainingFormat } from '../../features/scorm/scorm.types';
 import { DEFAULT_SCORM_2004_STATE, DEFAULT_SCORM_12_STATE, TRAINING_FORMAT } from '../../features/scorm/scorm.constants';
+import { ScormV12 } from "../../features/scorm/models/scorm-version-12";
 
 const ScormPlayer: React.FC<IScormPlayerProps> = (props: IScormPlayerProps) => {
     const [scormState, setScormState] = useState<IScormApi_1_2 & IScormApi_2004>({
@@ -57,7 +58,7 @@ const ScormPlayer: React.FC<IScormPlayerProps> = (props: IScormPlayerProps) => {
 
         const trainingFormat: TrainingFormat = getTrainingVersion(props.manifest.version);
         console.log('Training format: ' + trainingFormat);
-        let scormApi: ScormStateVersion12 | ScormStateVersion2004v2 | null;
+        let scormApi: ScormV12.ApiSignature | ScormStateVersion2004v2 | null;
 
         switch(trainingFormat) {
             case TRAINING_FORMAT.SCORM_1_2:
