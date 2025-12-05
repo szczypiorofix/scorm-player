@@ -10,18 +10,33 @@ import { createScormApi12 } from "../../utils/ScormAPI12";
 import { Notification } from "../notification/Notification";
 import { NotificationType } from '../notification/Notification';
 import { createScormApi2004 } from '../../utils/ScormAPI2004';
-import type { IScormApi_1_2, IScormApi_2004 } from '../../features/scorm/scorm.types';
-import { DEFAULT_SCORM_2004_STATE, DEFAULT_SCORM_12_STATE } from '../../features/scorm/scorm.constants';
-import { TRAINING_FORMAT, type Scorm12API, type Scorm2004API, type TrainingFormat } from "../../features/scorm/api";
+import type { PlayerRootState } from '../../features/scorm/scorm.types';
+import { DEFAULT_SCORM_STATE } from '../../features/scorm/scorm.constants';
+import {
+    TRAINING_FORMAT,
+    type Scorm12API,
+    type Scorm2004API,
+    type TrainingFormat,
+    type Scorm12Status,
+} from "../../features/scorm/api";
 
 const ScormPlayer: React.FC<IScormPlayerProps> = (props: IScormPlayerProps) => {
-    const [scormState, setScormState] = useState<IScormApi_1_2 & IScormApi_2004>({
-        ...DEFAULT_SCORM_12_STATE,
-        ...DEFAULT_SCORM_2004_STATE
-    });
+    const [playerState, setPlayerState] = useState<PlayerRootState>(DEFAULT_SCORM_STATE);
 
     const iframeRef = useRef<HTMLIFrameElement | null>(null);
-    const studentName: string = scormState.studentName;
+
+    let studentName: string = "";
+    if ("core" in playerState.scormData) {
+        studentName = playerState.scormData.core.student_name;
+    }
+    if ("learner_name" in playerState.scormData) {
+        studentName = playerState.scormData.learner_name;
+    }
+
+    let lessonStatus: Scorm12Status = 'not attempted';
+    if ("core" in playerState.scormData) {
+        lessonStatus = playerState.scormData.core.lesson_status;
+    }
 
     const { data: initialScormData, isLoading: isLoadingProgress, error: loadError } = useLoadProgress({
         userId: studentName,
@@ -33,22 +48,12 @@ const ScormPlayer: React.FC<IScormPlayerProps> = (props: IScormPlayerProps) => {
         courseId: COURSE_ID,
     });
 
-    const handleStateChangeForScorm12 = useCallback((state: IScormApi_1_2) => {
-        console.log('[REACT STATE UPDATE]: ', state);
-        setScormState(prevState => {
-            const updatedState = { ...prevState, ...state };
-            saveProgress(updatedState);
-            return updatedState;
-        });
-    }, [saveProgress]);
-
-    const handleStateChangeForScorm2004 = useCallback((state: IScormApi_2004) => {
-        console.log('[REACT STATE UPDATE]: ', state);
-        setScormState(prevState => {
-            const updatedState = { ...prevState, ...state };
-            saveProgress(updatedState);
-            return updatedState;
-        });
+    const handleScormUpdate = useCallback((newData: PlayerRootState) => {
+        setPlayerState((prev: PlayerRootState) => ({
+            ...prev,
+            scormData: newData.scormData
+        }));
+        saveProgress(newData); // Zapisujemy strukturę CMI bezpośrednio
     }, [saveProgress]);
 
     useEffect(() => {
@@ -63,8 +68,8 @@ const ScormPlayer: React.FC<IScormPlayerProps> = (props: IScormPlayerProps) => {
         switch(trainingFormat) {
             case TRAINING_FORMAT.SCORM_1_2:
                     scormApi = createScormApi12(
-                        handleStateChangeForScorm12,
-                        initialScormData as IScormApi_1_2,
+                        handleScormUpdate,
+                        initialScormData as PlayerRootState,
                         () => { console.log('Progress saved via Commit.'); }
                     );
                     window.API = scormApi;
@@ -72,8 +77,8 @@ const ScormPlayer: React.FC<IScormPlayerProps> = (props: IScormPlayerProps) => {
 
             default:
                     scormApi = createScormApi2004(
-                        handleStateChangeForScorm2004,
-                        initialScormData as IScormApi_2004,
+                        handleScormUpdate,
+                        initialScormData as PlayerRootState,
                         () => { console.log('Progress saved via Commit.'); }
                     );
                     window.API_1484_11 = scormApi;
@@ -103,8 +108,7 @@ const ScormPlayer: React.FC<IScormPlayerProps> = (props: IScormPlayerProps) => {
         isLoadingProgress,
         initialScormData,
         props.manifest.version,
-        handleStateChangeForScorm12,
-        handleStateChangeForScorm2004
+        handleScormUpdate
     ]);
 
     if (isLoadingProgress) {
@@ -118,15 +122,15 @@ const ScormPlayer: React.FC<IScormPlayerProps> = (props: IScormPlayerProps) => {
     return (
         <SP.ScormPlayer>
             <SP.StatusInfo>
-                <StatusGroup title={"Uczestnik"} value={scormState.studentName}/>
-                <StatusGroup title={"Status Inicjalizacji"} value={scormState.isInitialized ? 'Aktywne' : 'Nieaktywne'}/>
-                <StatusGroup title={"Status Ukończenia"} value={scormState.lessonStatus}/>
-                { scormState.completionStatus && <StatusGroup title={"Zaliczenie"} value={scormState.successStatus}/>}
-                { !(scormState.maxScore && scormState.minScore) && (scormState.score || scormState.rawScore) 
-                    && <StatusGroup title={"Wynik"} value={`${scormState.score || scormState.rawScore}%`}/>}
-                { scormState.maxScore && scormState.minScore
-                    && <StatusGroup title={"Wynik"} value={`${scormState.rawScore}% (${scormState.minScore}/${scormState.maxScore})`}/>}
-                <StatusGroup title={"Czas sesji"} value={scormState.sessionTime}/>
+                <StatusGroup title={"Uczestnik"} value={studentName}/>
+                <StatusGroup title={"Status Inicjalizacji"} value={playerState.meta.isInitialized ? 'Aktywne' : 'Nieaktywne'}/>
+                <StatusGroup title={"Status Ukończenia"} value={lessonStatus}/>
+                {/*{ scormState.completionStatus && <StatusGroup title={"Zaliczenie"} value={scormState.successStatus}/>}*/}
+                {/*{ !(scormState.maxScore && scormState.minScore) && (scormState.score || scormState.rawScore) */}
+                {/*    && <StatusGroup title={"Wynik"} value={`${scormState.score || scormState.rawScore}%`}/>}*/}
+                {/*{ scormState.maxScore && scormState.minScore*/}
+                {/*    && <StatusGroup title={"Wynik"} value={`${scormState.rawScore}% (${scormState.minScore}/${scormState.maxScore})`}/>}*/}
+                {/*<StatusGroup title={"Czas sesji"} value={scormState.sessionTime}/>*/}
                 {isSavingProgress && <span>Zapisywanie...</span>}
                 {saveError && <Notification message={"Save data error!"} type={NotificationType.ERROR}/> }
             </SP.StatusInfo>

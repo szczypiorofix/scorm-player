@@ -1,26 +1,11 @@
-export interface IScormApi_1_2 {
-    lessonStatus: string;
-    score: string;
-    isInitialized: boolean;
-    studentName: string;
-    suspendData: string;
-    sessionTime: string;
-    exit: string;
-    mode: string;
-}
+import type { CMI12, CMI2004 } from "./api";
 
-export interface IScormApi_2004 {
-    lessonStatus: string;
-    score: string;
-    isInitialized: boolean;
-    studentName: string;
-    suspendData: string;
-    sessionTime: string;
-    exit: string;
-    rawScore: string;
-    maxScore: string;
-    minScore: string;
-    scaledScore: string;
-    successStatus: string;
-    completionStatus: string;
+export interface PlayerRootState {
+    meta: {
+        isInitialized: boolean;
+        isLoading: boolean;
+        lastSaved: Date | null;
+        error: string | null;
+    };
+    scormData: CMI12 | CMI2004;
 }

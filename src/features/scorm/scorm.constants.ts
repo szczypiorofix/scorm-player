@@ -1,34 +1,11 @@
-import type { IScormApi_1_2, IScormApi_2004 } from "./scorm.types";
+import type { PlayerRootState } from "./scorm.types";
 import type { Dictionary } from "../../shared/types";
+import type { CMI12, CMI2004 } from "./api";
 
-export const DEFAULT_SCORM_12_STATE: Readonly<IScormApi_1_2> = {
-    lessonStatus: '',
-    isInitialized: false,
-    score: '0',
-    sessionTime: '0000:00:00',
-    studentName: 'Todd',
-    suspendData: '',
-    exit: '',
-    mode: '',
+export const DEFAULT_SCORM_STATE: Readonly<PlayerRootState> = {
+    meta: { isInitialized: false, isLoading: true, lastSaved: null, error: null },
+    scormData: {} as CMI12 | CMI2004
 }
-
-export const DEFAULT_SCORM_2004_STATE: Readonly<IScormApi_2004> = {
-    isInitialized: false,
-    lessonStatus: '',
-    score: '',
-    sessionTime: '0000:00:00',
-    studentName: 'Todd',
-    suspendData: '',
-    completionStatus: '',
-    exit: '',
-    maxScore: '',
-    minScore: '',
-    rawScore: '',
-    scaledScore: '',
-    successStatus: '',
-}
-
-
 
 export const SCORM_1_2_DATA_MODEL_KEYS = [
     'cmi.core.student_id',

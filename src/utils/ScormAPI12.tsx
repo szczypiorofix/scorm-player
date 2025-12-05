@@ -1,57 +1,87 @@
-import { SCORM_BOOLEAN, type Scorm12API } from "../features/scorm/api";
-import { DEFAULT_SCORM_12_STATE, scorm_12_objectMap } from "../features/scorm/scorm.constants";
-import type { IScormApi_1_2 } from "../features/scorm/scorm.types";
-import { getStateKeyByDictionaryKey, updateStateValueByKey } from "./ScormObjectParser";
+import {SCORM_BOOLEAN, type Scorm12API, type CMI12, type CMI2004} from "../features/scorm/api";
+import type {PlayerRootState} from "../features/scorm/scorm.types.ts";
+import { DEFAULT_SCORM_STATE } from "../features/scorm/scorm.constants.ts";
+
+function setNestedValue(obj: any, path: string, value: string) {
+    const keys = path.split('.');
+    let current = obj;
+
+    for (let i = 0; i < keys.length - 1; i++) {
+        const key = keys[i];
+        // Obsługa tablic (np. interactions.0)
+        if (!current[key]) current[key] = {};
+        current = current[key];
+    }
+
+    current[keys[keys.length - 1]] = value;
+    return { ...obj }; // Zwracamy nową referencję dla Reacta
+}
+
+export interface ScormApi12RootState {
+    meta: {
+        isInitialized: boolean;
+        isLoading: boolean;
+        lastSaved: Date | null;
+        error: string | null;
+    };
+    scormData: CMI12;
+}
 
 export function createScormApi12(
-    onStateChange: (state: IScormApi_1_2) => void,
-    initialData: Partial<IScormApi_1_2> | null = null,
+    onStateChange: (state: ScormApi12RootState) => void,
+    initialData: PlayerRootState | null = null,
     saveProgress: () => void
 ): Scorm12API {
-    let state: IScormApi_1_2 = {
-        ...DEFAULT_SCORM_12_STATE,
-        ...initialData,
+    let state: ScormApi12RootState = {
+        meta: initialData?.meta ?? {
+            isInitialized: false,
+            error: '',
+            lastSaved: null,
+            isLoading: false
+        },
+        scormData: state.scormData
     };
 
     let isInitialized = false;
 
     return {
         LMSInitialize: (param) => {
-            if (isInitialized) return SCORM_BOOLEAN.FALSE;
-            isInitialized = true;
             console.log("LMS (Parent) Event: LMSInitialize. Param: " + param);
-
-            state.isInitialized = isInitialized;
-
-            if (state.lessonStatus !== 'completed') {
-                state.lessonStatus = 'incomplete';
+            if (isInitialized) {
+                return SCORM_BOOLEAN.FALSE;
             }
+            isInitialized = true;
+
+            state.meta.isInitialized = isInitialized;
 
             onStateChange(state);
 
             return SCORM_BOOLEAN.TRUE;
         },
         LMSFinish: (param) => {
-            if (!isInitialized) return SCORM_BOOLEAN.FALSE;
-            isInitialized = false;
             console.log("LMS (Parent) Event: LMSFinish. Param: " + param);
+            if (!isInitialized) {
+                return SCORM_BOOLEAN.FALSE;
+            }
+            isInitialized = false;
 
-            state.isInitialized = isInitialized;
+            state.meta.isInitialized = isInitialized;
             onStateChange(state);
 
             saveProgress();
 
             return SCORM_BOOLEAN.TRUE;
         },
-        LMSGetValue: (key) => {
-            const v = getStateKeyByDictionaryKey(state, key as keyof IScormApi_1_2, scorm_12_objectMap);
-            console.log(`LMSGetValue: [KEY: ${key}]: ${v}=${state[v as keyof IScormApi_1_2]}`);
-            return state[v as keyof IScormApi_1_2];
+        LMSGetValue: (key): string => {
+            // const v = getStateKeyByDictionaryKey(state, key as keyof IScormApi_1_2, scorm_12_objectMap);
+            console.log(`LMSGetValue: [KEY: ${key}]`);
+            // return state[v as keyof IScormApi_1_2];
+            return state.scormData[key] as string;
         },
         LMSSetValue: (key, value) => {
-            console.log('LMSSetValue: Update key ' + key + ' value: ' + value)
-            
-            state = updateStateValueByKey<IScormApi_1_2, keyof IScormApi_1_2>(state, key as keyof IScormApi_1_2, value, scorm_12_objectMap);
+            console.log(`LMSSetValue: ${key} = ${value}`);
+
+            state = setNestedValue(state, key, value);
             onStateChange(state);
 
             return SCORM_BOOLEAN.TRUE;

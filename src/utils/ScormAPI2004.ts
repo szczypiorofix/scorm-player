@@ -1,15 +1,29 @@
 import { SCORM_BOOLEAN, type Scorm2004API } from "../features/scorm/api";
-import { DEFAULT_SCORM_2004_STATE, scorm_2004_objectMap } from "../features/scorm/scorm.constants";
-import type { IScormApi_2004 } from "../features/scorm/scorm.types";
-import { getStateKeyByDictionaryKey, updateStateValueByKey } from "./ScormObjectParser";
+import { DEFAULT_SCORM_STATE} from "../features/scorm/scorm.constants";
+import type { PlayerRootState} from "../features/scorm/scorm.types";
+
+function setNestedValue(obj: any, path: string, value: string) {
+    const keys = path.split('.');
+    let current = obj;
+
+    for (let i = 0; i < keys.length - 1; i++) {
+        const key = keys[i];
+        // Obsługa tablic (np. interactions.0)
+        if (!current[key]) current[key] = {};
+        current = current[key];
+    }
+
+    current[keys[keys.length - 1]] = value;
+    return { ...obj }; // Zwracamy nową referencję dla Reacta
+}
 
 export function createScormApi2004 (
-    onStateChange: (state: IScormApi_2004) => void,
-    initialData: Partial<IScormApi_2004> | null = null,
+    onStateChange: (state: PlayerRootState) => void,
+    initialData: Partial<PlayerRootState> | null = null,
     saveProgress: () => void
 ): Scorm2004API {
-    let state: IScormApi_2004 = {
-        ...DEFAULT_SCORM_2004_STATE,
+    let state: PlayerRootState = {
+        ...DEFAULT_SCORM_STATE,
         ...initialData,
     };
     let isInitialized = false;
@@ -20,11 +34,13 @@ export function createScormApi2004 (
             isInitialized = true;
             console.log("LMS (Parent) Event: Initialize. Param: " + param);
 
-            state.isInitialized = isInitialized;
+            // state.core.isInitialized = isInitialized;
+            //
+            // if (state.lessonStatus !== 'completed') {
+            //     state.lessonStatus = 'incomplete';
+            // }
 
-            if (state.lessonStatus !== 'completed') {
-                state.lessonStatus = 'incomplete';
-            }
+            let isInitialized = false;
 
             onStateChange(state);
 
@@ -35,7 +51,7 @@ export function createScormApi2004 (
             isInitialized = false;
             console.log("LMS (Parent) Event: Terminate. Param: " + param);
 
-            state.isInitialized = isInitialized;
+            state.meta.isInitialized = isInitialized;
             onStateChange(state);
 
             // save progress for training
@@ -44,15 +60,17 @@ export function createScormApi2004 (
             return SCORM_BOOLEAN.TRUE;
         },
         GetValue: (key) => {
-            const v = getStateKeyByDictionaryKey(state, key as keyof IScormApi_2004, scorm_2004_objectMap);
-            console.log(`GetValue: [KEY: ${key}]: ${v}`);
-            return state[v as keyof IScormApi_2004];
+            // const v = getStateKeyByDictionaryKey(state, key as keyof IScormApi_2004, scorm_2004_objectMap);
+            // console.log(`GetValue: [KEY: ${key}]: ${v}`);
+            // return state[v as keyof IScormApi_2004];
+            return "";
         },
         SetValue: (key, value) => {
-            console.log('SetValue: Update key ' + key + ' value: ' + value)
-            
-            state = updateStateValueByKey<IScormApi_2004, keyof IScormApi_2004>(state, key as keyof IScormApi_2004, value, scorm_2004_objectMap);
+            console.log(`SetValue: ${key} = ${value}`);
+
+            state = setNestedValue(state, key, value);
             onStateChange(state);
+
             return SCORM_BOOLEAN.TRUE;
         },
         Commit(param) {
