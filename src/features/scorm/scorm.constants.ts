@@ -1,7 +1,7 @@
-import type { IScormApi12State, IScormApi2004State } from "./scorm.types";
+import type { IScormApi_1_2, IScormApi_2004 } from "./scorm.types";
 import type { Dictionary } from "../../shared/types";
 
-export const DEFAULT_SCORM_12_STATE: Readonly<IScormApi12State> = {
+export const DEFAULT_SCORM_12_STATE: Readonly<IScormApi_1_2> = {
     lessonStatus: '',
     isInitialized: false,
     score: '0',
@@ -12,7 +12,7 @@ export const DEFAULT_SCORM_12_STATE: Readonly<IScormApi12State> = {
     mode: '',
 }
 
-export const DEFAULT_SCORM_2004_STATE: Readonly<IScormApi2004State> = {
+export const DEFAULT_SCORM_2004_STATE: Readonly<IScormApi_2004> = {
     isInitialized: false,
     lessonStatus: '',
     score: '',
@@ -28,19 +28,7 @@ export const DEFAULT_SCORM_2004_STATE: Readonly<IScormApi2004State> = {
     successStatus: '',
 }
 
-export const TRAINING_FORMAT = {
-    SCORM_1_2: 'SCORM_1_2',
-    SCORM_2004: 'SCORM_2004',
-    SCORM_2004v2: 'SCORM_2004v2',
-    SCORM_2004v3: 'SCORM_2004v3',
-    SCORM_2004v4: 'SCORM_2004v4',
-    XAPI: 'XAPI',
-} as const;
 
-export const SCORM_BOOLEAN = {
-  TRUE: "true",
-  FALSE: "false",
-} as const;
 
 export const SCORM_1_2_DATA_MODEL_KEYS = [
     'cmi.core.student_id',

@@ -10,12 +10,12 @@ import { createScormApi12 } from "../../utils/ScormAPI12";
 import { Notification } from "../notification/Notification";
 import { NotificationType } from '../notification/Notification';
 import { createScormApi2004 } from '../../utils/ScormAPI2004';
-import type { IScormApi12State, IScormApi2004State, TrainingFormat } from '../../features/scorm/scorm.types';
-import { DEFAULT_SCORM_2004_STATE, DEFAULT_SCORM_12_STATE, TRAINING_FORMAT } from '../../features/scorm/scorm.constants';
-import type { Scorm12API, Scorm2004API } from "../../features/scorm/api";
+import type { IScormApi_1_2, IScormApi_2004 } from '../../features/scorm/scorm.types';
+import { DEFAULT_SCORM_2004_STATE, DEFAULT_SCORM_12_STATE } from '../../features/scorm/scorm.constants';
+import { TRAINING_FORMAT, type Scorm12API, type Scorm2004API, type TrainingFormat } from "../../features/scorm/api";
 
 const ScormPlayer: React.FC<IScormPlayerProps> = (props: IScormPlayerProps) => {
-    const [scormState, setScormState] = useState<IScormApi12State & IScormApi2004State>({
+    const [scormState, setScormState] = useState<IScormApi_1_2 & IScormApi_2004>({
         ...DEFAULT_SCORM_12_STATE,
         ...DEFAULT_SCORM_2004_STATE
     });
@@ -33,7 +33,7 @@ const ScormPlayer: React.FC<IScormPlayerProps> = (props: IScormPlayerProps) => {
         courseId: COURSE_ID,
     });
 
-    const handleStateChangeForScorm12 = useCallback((state: IScormApi12State) => {
+    const handleStateChangeForScorm12 = useCallback((state: IScormApi_1_2) => {
         console.log('[REACT STATE UPDATE]: ', state);
         setScormState(prevState => {
             const updatedState = { ...prevState, ...state };
@@ -42,7 +42,7 @@ const ScormPlayer: React.FC<IScormPlayerProps> = (props: IScormPlayerProps) => {
         });
     }, [saveProgress]);
 
-    const handleStateChangeForScorm2004 = useCallback((state: IScormApi2004State) => {
+    const handleStateChangeForScorm2004 = useCallback((state: IScormApi_2004) => {
         console.log('[REACT STATE UPDATE]: ', state);
         setScormState(prevState => {
             const updatedState = { ...prevState, ...state };
@@ -64,7 +64,7 @@ const ScormPlayer: React.FC<IScormPlayerProps> = (props: IScormPlayerProps) => {
             case TRAINING_FORMAT.SCORM_1_2:
                     scormApi = createScormApi12(
                         handleStateChangeForScorm12,
-                        initialScormData as IScormApi12State,
+                        initialScormData as IScormApi_1_2,
                         () => { console.log('Progress saved via Commit.'); }
                     );
                     window.API = scormApi;
@@ -73,7 +73,7 @@ const ScormPlayer: React.FC<IScormPlayerProps> = (props: IScormPlayerProps) => {
             default:
                     scormApi = createScormApi2004(
                         handleStateChangeForScorm2004,
-                        initialScormData as IScormApi2004State,
+                        initialScormData as IScormApi_2004,
                         () => { console.log('Progress saved via Commit.'); }
                     );
                     window.API_1484_11 = scormApi;

@@ -1,5 +1,5 @@
-import type { ScormBoolean } from "../scorm.types.ts";
-import { CMIErrorCodes } from "./common.types.ts";
+import { CMIErrorCodes } from './common.constants';
+import type { ScormBoolean } from "./common.types.ts";
 
 export interface Scorm12API {
     LMSInitialize: (param: string) => ScormBoolean;
