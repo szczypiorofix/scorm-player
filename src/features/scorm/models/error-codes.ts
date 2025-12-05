@@ -1,10 +1,10 @@
-export namespace ScormV12 {
+namespace ScormVersion11 {
     export interface ApiSignature {
-        LMSInitialize(arg: string): boolean;
-        LMSFinish(arg: string): boolean;
+        LMSInitialize(arg?: string): boolean;
+        LMSFinish(arg?: string): boolean;
         LMSGetValue(element: CMIElement): string;
-        LMSSetValue(element: CMIElement, value: string) : string;
-        LMSCommit(arg: string): boolean;
+        LMSSetValue(element: CMIElement, value: string): string;
+        LMSCommit(arg?: string): boolean;
         LMSGetLastError(): keyof typeof CMIErrorCodes;
         LMSGetErrorString(errorCode : keyof typeof CMIErrorCodes): string;
         LMSGetDiagnostic(errorCode: keyof typeof CMIErrorCodes): string;
@@ -82,17 +82,5 @@ export namespace ScormV12 {
         "cmi.interactions.0.result",
     ];
 
-    export const CMIErrorCodes = {
-        0:   "No error",
-        101: "General exception", // W SCORM 1.2 kod 10 jest często oznaczany jako 101
-        201: "Invalid argument error",
-        202: "Element cannot have children",
-        203: "Element not an array. Cannot have count.",
-        301: "Not initialized",
-        401: "Not implemented error",
-        402: "Invalid set value, element is a keyword",
-        403: "Element is read only",
-        404: "Element is write only",
-        405: "Incorrect Data Type"
-    } as const;
+
 }

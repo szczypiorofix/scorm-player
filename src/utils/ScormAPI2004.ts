@@ -1,41 +1,13 @@
 import { DEFAULT_SCORM_2004_STATE, scorm_2004_objectMap, SCORM_BOOLEAN } from "../features/scorm/scorm.constants";
-import type { IScormApi_2004, ScormStateVersion2004v2 } from "../features/scorm/scorm.types";
+import type { IScormApi_2004 } from "../features/scorm/scorm.types";
 import { getStateKeyByDictionaryKey, updateStateValueByKey } from "./ScormObjectParser";
-
-/**
- * 
-    SCORM 2004 parameters:
-    'cmi.core.lesson_status': 'incomplete',
-    'cmi.core.score.raw': '0',
-    isInitialized: true,
-    'cmi.core.session_time': '0',
-    'cmi.core.student_name': 'Todd',
-    'cmi.suspend_data': '....',
-    'cmi.exit': 'suspend',
-    'cmi.score.raw': '33.33',
-    'cmi.score.max': '100',
-    'cmi.score.min': '0',
-    'cmi.score.scaled': '0.3333',
-    'cmi.success_status': 'unknown',
-    'cmi.completion_status': 'incomplete',
-    'cmi.session_time': 'PT1.79S',
-    'cmi.interactions.0.id': 'Scene1_Slide1_FreeFormPickMany_1_0',
-    'cmi.interactions.0.type': 'choice',
-    'cmi.interactions.0.learner_response': 'praw',
-    'cmi.interactions.0.result': 'correct',
-    'cmi.interactions.0.correct_responses.0.pattern': 'praw',
-    'cmi.interactions.0.description': 'Pick Many',
-    'cmi.interactions.0.weighting': '10',
-    'cmi.interactions.0.latency': 'PT5.12S',
-    'cmi.interactions.0.objectives.0.id': 'TEST_LMS_SCORM_2004',
-    'cmi.interactions.0.timestamp': '2025-07-31T16:44:37.0+02'
- */
+import type { Scorm2004API } from "../features/scorm/api";
 
 export function createScormApi2004 (
     onStateChange: (state: IScormApi_2004) => void,
     initialData: Partial<IScormApi_2004> | null = null,
     saveProgress: () => void
-): ScormStateVersion2004v2 {
+): Scorm2004API {
     let state: IScormApi_2004 = {
         ...DEFAULT_SCORM_2004_STATE,
         ...initialData,
@@ -90,5 +62,5 @@ export function createScormApi2004 (
         GetLastError: () => {
             return "0";
         },
-    } as ScormStateVersion2004v2;
+    } as Scorm2004API;
 }

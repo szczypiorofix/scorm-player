@@ -1,6 +1,6 @@
-import type {SCORM_BOOLEAN, TRAINING_FORMAT} from "./scorm.constants";
+import type { SCORM_BOOLEAN, TRAINING_FORMAT } from "./scorm.constants";
 
-export type ScormBoolean = (typeof SCORM_BOOLEAN)[keyof typeof SCORM_BOOLEAN];
+export type ScormBoolean = (typeof SCORM_BOOLEAN)[keyof typeof SCORM_BOOLEAN] | boolean;
 
 export type TrainingFormat = typeof TRAINING_FORMAT[keyof typeof TRAINING_FORMAT];
 
@@ -61,43 +61,5 @@ export interface Resource {
     files: string[];
 }
 
-export interface ScormStateVersion12 {
-    LMSInitialize: (param: string) => ScormBoolean;
-    LMSFinish: (param: string) => ScormBoolean;
-    LMSGetValue: (key: string) => string;
-    LMSSetValue: (key: string, value: string) => ScormBoolean;
-    LMSCommit: (param: string) => ScormBoolean;
-    LMSGetLastError: () => string;
-    LMSGetErrorString: (errorCode: string) => string;
-    LMSGetDiagnostic: (errorCode: string) => string;
-}
 
-export interface ScormStateVersion2004v2 {
-    Initialize: (param: string) => ScormBoolean;
-    Terminate: (param: string) => ScormBoolean;
-    GetValue: (key: string) => string;
-    SetValue: (key: string, value: string) => ScormBoolean;
-    SetScore: (key: string, value: string) => ScormBoolean;
-    Commit: (param: string) => ScormBoolean;
-    GetLastError: () => string;
-}
 
-export interface ScormStateVersion2004v3 {
-    Initialize: (param: string) => ScormBoolean;
-    Terminate: (param: string) => ScormBoolean;
-    GetValue: (key: string) => string;
-    SetValue: (key: string, value: string) => ScormBoolean;
-    SetScore: (key: string, value: string) => ScormBoolean;
-    Commit: (param: string) => ScormBoolean;
-    GetLastError: () => string;
-}
-
-export interface ScormStateVersion2004v4 {
-    Initialize: (param: string) => ScormBoolean;
-    Terminate: (param: string) => ScormBoolean;
-    GetValue: (key: string) => string;
-    SetValue: (key: string, value: string) => ScormBoolean;
-    SetScore: (key: string, value: string) => ScormBoolean;
-    Commit: (param: string) => ScormBoolean;
-    GetLastError: () => string;
-}
