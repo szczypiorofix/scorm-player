@@ -1,7 +1,7 @@
-import type { IScormApi_1_2, IScormApi_2004 } from "./scorm.types";
+import type { IScormApi12State, IScormApi2004State } from "./scorm.types";
 import type { Dictionary } from "../../shared/types";
 
-export const DEFAULT_SCORM_12_STATE: Readonly<IScormApi_1_2> = {
+export const DEFAULT_SCORM_12_STATE: Readonly<IScormApi12State> = {
     lessonStatus: '',
     isInitialized: false,
     score: '0',
@@ -12,7 +12,7 @@ export const DEFAULT_SCORM_12_STATE: Readonly<IScormApi_1_2> = {
     mode: '',
 }
 
-export const DEFAULT_SCORM_2004_STATE: Readonly<IScormApi_2004> = {
+export const DEFAULT_SCORM_2004_STATE: Readonly<IScormApi2004State> = {
     isInitialized: false,
     lessonStatus: '',
     score: '',

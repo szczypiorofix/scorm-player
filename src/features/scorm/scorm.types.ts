@@ -4,7 +4,7 @@ export type ScormBoolean = (typeof SCORM_BOOLEAN)[keyof typeof SCORM_BOOLEAN] | 
 
 export type TrainingFormat = typeof TRAINING_FORMAT[keyof typeof TRAINING_FORMAT];
 
-export interface IScormApi_1_2 {
+export interface IScormApi12State {
     lessonStatus: string;
     score: string;
     isInitialized: boolean;
@@ -15,7 +15,7 @@ export interface IScormApi_1_2 {
     mode: string;
 }
 
-export interface IScormApi_2004 {
+export interface IScormApi2004State {
     lessonStatus: string;
     score: string;
     isInitialized: boolean;

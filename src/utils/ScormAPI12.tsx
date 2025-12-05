@@ -1,14 +1,14 @@
 import { DEFAULT_SCORM_12_STATE, scorm_12_objectMap, SCORM_BOOLEAN } from "../features/scorm/scorm.constants";
-import type { IScormApi_1_2 } from "../features/scorm/scorm.types";
+import type { IScormApi12State } from "../features/scorm/scorm.types";
 import { getStateKeyByDictionaryKey, updateStateValueByKey } from "./ScormObjectParser";
 import type { Scorm12API } from "../features/scorm/api";
 
 export function createScormApi12(
-    onStateChange: (state: IScormApi_1_2) => void,
-    initialData: Partial<IScormApi_1_2> | null = null,
+    onStateChange: (state: IScormApi12State) => void,
+    initialData: Partial<IScormApi12State> | null = null,
     saveProgress: () => void
 ): Scorm12API {
-    let state: IScormApi_1_2 = {
+    let state: IScormApi12State = {
         ...DEFAULT_SCORM_12_STATE,
         ...initialData,
     };
@@ -45,14 +45,14 @@ export function createScormApi12(
             return SCORM_BOOLEAN.TRUE;
         },
         LMSGetValue: (key) => {
-            const v = getStateKeyByDictionaryKey(state, key as keyof IScormApi_1_2, scorm_12_objectMap);
-            console.log(`LMSGetValue: [KEY: ${key}]: ${v}=${state[v as keyof IScormApi_1_2]}`);
-            return state[v as keyof IScormApi_1_2];
+            const v = getStateKeyByDictionaryKey(state, key as keyof IScormApi12State, scorm_12_objectMap);
+            console.log(`LMSGetValue: [KEY: ${key}]: ${v}=${state[v as keyof IScormApi12State]}`);
+            return state[v as keyof IScormApi12State];
         },
         LMSSetValue: (key, value) => {
             console.log('LMSSetValue: Update key ' + key + ' value: ' + value)
             
-            state = updateStateValueByKey<IScormApi_1_2, keyof IScormApi_1_2>(state, key as keyof IScormApi_1_2, value, scorm_12_objectMap);
+            state = updateStateValueByKey<IScormApi12State, keyof IScormApi12State>(state, key as keyof IScormApi12State, value, scorm_12_objectMap);
             onStateChange(state);
 
             return SCORM_BOOLEAN.TRUE;
