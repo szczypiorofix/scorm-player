@@ -11,7 +11,11 @@ import { Notification } from "../notification/Notification";
 import { NotificationType } from '../notification/Notification';
 import { createScormApi2004 } from '../../utils/ScormAPI2004';
 import type { PlayerRootState } from '../../features/scorm/scorm.types';
-import { DEFAULT_SCORM_STATE } from '../../features/scorm/scorm.constants';
+import {
+    DEFAULT_SCORM12_STATE,
+    DEFAULT_SCORM2004_STATE,
+    DEFAULT_SCORM_STATE
+} from '../../features/scorm/scorm.constants';
 import {
     TRAINING_FORMAT,
     type Scorm12API,
@@ -25,7 +29,7 @@ const ScormPlayer: React.FC<IScormPlayerProps> = (props: IScormPlayerProps) => {
 
     const iframeRef = useRef<HTMLIFrameElement | null>(null);
 
-    let studentName: string = "";
+    let studentName: string = "Todd"; // default name (must be anything other than empty string!)
     if ("core" in playerState.scormData) {
         studentName = playerState.scormData.core.student_name;
     }
@@ -53,7 +57,10 @@ const ScormPlayer: React.FC<IScormPlayerProps> = (props: IScormPlayerProps) => {
             ...prev,
             scormData: newData.scormData
         }));
-        saveProgress(newData); // Zapisujemy strukturę CMI bezpośrednio
+
+        console.log(newData);
+
+        saveProgress(newData);
     }, [saveProgress]);
 
     useEffect(() => {
@@ -70,6 +77,13 @@ const ScormPlayer: React.FC<IScormPlayerProps> = (props: IScormPlayerProps) => {
                     scormApi = createScormApi12(
                         handleScormUpdate,
                         initialScormData as PlayerRootState,
+                        {
+                            ...DEFAULT_SCORM12_STATE,
+                            core: {
+                                ...DEFAULT_SCORM12_STATE.core,
+                                student_name: studentName
+                            }
+                        },
                         () => { console.log('Progress saved via Commit.'); }
                     );
                     window.API = scormApi;
@@ -79,6 +93,10 @@ const ScormPlayer: React.FC<IScormPlayerProps> = (props: IScormPlayerProps) => {
                     scormApi = createScormApi2004(
                         handleScormUpdate,
                         initialScormData as PlayerRootState,
+                        {
+                            ...DEFAULT_SCORM2004_STATE,
+                            learner_name: studentName
+                        },
                         () => { console.log('Progress saved via Commit.'); }
                     );
                     window.API_1484_11 = scormApi;
@@ -104,6 +122,7 @@ const ScormPlayer: React.FC<IScormPlayerProps> = (props: IScormPlayerProps) => {
             console.log("SCORM API cleaned up.");
         };
     }, [
+        studentName,
         props.scormFilePath,
         isLoadingProgress,
         initialScormData,

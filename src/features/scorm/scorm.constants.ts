@@ -7,6 +7,85 @@ export const DEFAULT_SCORM_STATE: Readonly<PlayerRootState> = {
     scormData: {} as CMI12 | CMI2004
 }
 
+export const DEFAULT_SCORM12_STATE: Readonly<CMI12> = {
+    core: {
+        lesson_status: "not attempted",
+        lesson_mode: "normal",
+        lesson_location: "",
+        _children: "",
+        credit: "credit",
+        entry: "",
+        exit: "suspend",
+        score: {
+            raw: "0",
+            max: "100",
+            min: "0",
+            _children: "",
+        },
+        session_time: "",
+        student_id: "",
+        student_name: "",
+        total_time: "",
+    },
+    comments: "",
+    comments_from_lms: "",
+    launch_data: "",
+    student_data: {
+        mastery_score: "",
+        max_time_allowed: "",
+        time_limit_action: "",
+    },
+    suspend_data: "",
+    objectives: {
+        _count: "",
+    },
+    student_preference: {
+        audio: "",
+        language: "",
+        speed: "",
+        text: "",
+    }
+}
+
+export const DEFAULT_SCORM2004_STATE: Readonly<CMI2004> = {
+    credit: 'no-credit',
+    entry: '',
+    exit: 'normal',
+    score: {
+        raw: '0',
+        max: '100',
+        min: '0',
+        scaled: '0'
+    },
+    session_time: '',
+    comments_from_lms: [],
+    _version: '',
+    launch_data: '',
+    comments_from_learner: [],
+    total_time: '',
+    completion_status: 'not attempted',
+    completion_threshold: '',
+    interactions: {
+        _count: '0'
+    },
+    learner_id: '',
+    learner_name: '',
+    max_time_allowed: '',
+    location: '',
+    mode: 'normal',
+    suspend_data: '',
+    learner_preference: {
+        audio_level: '',
+        language: '',
+        audio_captioning: '',
+        delivery_speed: ''
+    },
+    progress_measure: '',
+    time_limit_action: '',
+    scaled_passing_score: '',
+    success_status: 'unknown'
+}
+
 export const SCORM_1_2_DATA_MODEL_KEYS = [
     'cmi.core.student_id',
     'cmi.core.student_name',

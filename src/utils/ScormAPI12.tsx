@@ -1,21 +1,6 @@
-import {SCORM_BOOLEAN, type Scorm12API, type CMI12, type CMI2004} from "../features/scorm/api";
+import { SCORM_BOOLEAN, type Scorm12API, type CMI12 } from "../features/scorm/api";
 import type {PlayerRootState} from "../features/scorm/scorm.types.ts";
-import { DEFAULT_SCORM_STATE } from "../features/scorm/scorm.constants.ts";
-
-function setNestedValue(obj: any, path: string, value: string) {
-    const keys = path.split('.');
-    let current = obj;
-
-    for (let i = 0; i < keys.length - 1; i++) {
-        const key = keys[i];
-        // Obsługa tablic (np. interactions.0)
-        if (!current[key]) current[key] = {};
-        current = current[key];
-    }
-
-    current[keys[keys.length - 1]] = value;
-    return { ...obj }; // Zwracamy nową referencję dla Reacta
-}
+import { getScormValue, setScormValue } from "./SetNestedValue.ts";
 
 export interface ScormApi12RootState {
     meta: {
@@ -30,19 +15,23 @@ export interface ScormApi12RootState {
 export function createScormApi12(
     onStateChange: (state: ScormApi12RootState) => void,
     initialData: PlayerRootState | null = null,
-    saveProgress: () => void
+    defaultData: CMI12,
+    saveProgressCallback: () => void
 ): Scorm12API {
-    let state: ScormApi12RootState = {
+    const currentState: ScormApi12RootState = {
         meta: initialData?.meta ?? {
             isInitialized: false,
             error: '',
             lastSaved: null,
             isLoading: false
         },
-        scormData: state.scormData
+        scormData: (initialData?.scormData as CMI12) || defaultData
     };
 
+    console.log(initialData);
+
     let isInitialized = false;
+    let lastError = "0";
 
     return {
         LMSInitialize: (param) => {
@@ -52,9 +41,9 @@ export function createScormApi12(
             }
             isInitialized = true;
 
-            state.meta.isInitialized = isInitialized;
+            currentState.meta.isInitialized = isInitialized;
 
-            onStateChange(state);
+            onStateChange(currentState);
 
             return SCORM_BOOLEAN.TRUE;
         },
@@ -65,25 +54,38 @@ export function createScormApi12(
             }
             isInitialized = false;
 
-            state.meta.isInitialized = isInitialized;
-            onStateChange(state);
+            currentState.meta.isInitialized = isInitialized;
+            onStateChange(currentState);
 
-            saveProgress();
+            saveProgressCallback();
 
             return SCORM_BOOLEAN.TRUE;
         },
         LMSGetValue: (key): string => {
-            // const v = getStateKeyByDictionaryKey(state, key as keyof IScormApi_1_2, scorm_12_objectMap);
-            console.log(`LMSGetValue: [KEY: ${key}]`);
-            // return state[v as keyof IScormApi_1_2];
-            return state.scormData[key] as string;
+            if (!isInitialized) {
+                lastError = "301"; // Not initialized
+                return "";
+            }
+
+            const value = getScormValue(currentState, key);
+            console.log(`LMSGetValue('${key}') -> '${value}'`);
+
+            lastError = "0"; // No error
+            return "";
         },
         LMSSetValue: (key, value) => {
-            console.log(`LMSSetValue: ${key} = ${value}`);
+            if (!isInitialized) {
+                lastError = "301";
+                return SCORM_BOOLEAN.FALSE;
+            }
 
-            state = setNestedValue(state, key, value);
-            onStateChange(state);
+            console.log(`LMSSetValue('${key}', '${value}')`);
 
+            currentState.scormData = setScormValue(currentState.scormData, key, value);
+
+            onStateChange(currentState);
+
+            lastError = "0";
             return SCORM_BOOLEAN.TRUE;
         },
         LMSCommit: (param) => {
@@ -91,7 +93,7 @@ export function createScormApi12(
             return SCORM_BOOLEAN.TRUE;
         },
         LMSGetLastError: () => {
-            return "0";
+            return lastError;
         },
         LMSGetErrorString: (errorCode) => {
             if (errorCode) {
