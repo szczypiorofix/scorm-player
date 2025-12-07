@@ -1,4 +1,4 @@
-import {TRAINING_FORMAT, type TrainingFormat} from "../features/scorm/api";
+import { TRAINING_FORMAT, type TrainingFormat } from "../features/scorm/api";
 
 export function getTrainingVersion(version: string): TrainingFormat {
     switch(version) {

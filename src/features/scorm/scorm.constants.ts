@@ -3,7 +3,7 @@ import type { Dictionary } from "../../shared/types";
 import type { CMI12, CMI2004 } from "./api";
 
 export const DEFAULT_SCORM_STATE: Readonly<PlayerRootState> = {
-    meta: { isInitialized: false, isLoading: true, lastSaved: null, error: null },
+    meta: { isInitialized: false, isLoading: true, lastSaved: null, error: null, trainingVersion: null },
     scormData: {} as CMI12 | CMI2004
 }
 

@@ -7,9 +7,9 @@ import * as SP from "./ScormPlayer.style";
 import { StatusGroup } from "./StatusGroup";
 import { getTrainingVersion } from '../../utils/TrainingVersionParser';
 import { createScormApi12 } from "../../utils/ScormAPI12";
+import { createScormApi2004 } from '../../utils/ScormAPI2004';
 import { Notification } from "../notification/Notification";
 import { NotificationType } from '../notification/Notification';
-import { createScormApi2004 } from '../../utils/ScormAPI2004';
 import type { PlayerRootState } from '../../features/scorm/scorm.types';
 import {
     DEFAULT_SCORM12_STATE,
@@ -132,6 +132,21 @@ const ScormPlayer: React.FC<IScormPlayerProps> = (props: IScormPlayerProps) => {
         handleScormUpdate
     ]);
 
+    function parseSessionTine(): string {
+        if (!playerState.scormData) {
+            return '';
+        }
+        if ("core" in playerState.scormData) {
+            return playerState.scormData.core.session_time || '';
+        }
+        if ("session_time" in playerState.scormData) {
+            return playerState.scormData.session_time || '';
+        }
+        return '';
+    }
+
+    const sessionTime: string = parseSessionTine();
+
     if (isLoadingProgress) {
         return <SP.ScormPlayer>Ładowanie danych kursu... ⏳</SP.ScormPlayer>;
     }
@@ -151,7 +166,7 @@ const ScormPlayer: React.FC<IScormPlayerProps> = (props: IScormPlayerProps) => {
                 {/*    && <StatusGroup title={"Wynik"} value={`${scormState.score || scormState.rawScore}%`}/>}*/}
                 {/*{ scormState.maxScore && scormState.minScore*/}
                 {/*    && <StatusGroup title={"Wynik"} value={`${scormState.rawScore}% (${scormState.minScore}/${scormState.maxScore})`}/>}*/}
-                {/*<StatusGroup title={"Czas sesji"} value={scormState.sessionTime}/>*/}
+                <StatusGroup title={"Czas sesji"} value={sessionTime}/>
                 {isSavingProgress && <span>Zapisywanie...</span>}
                 {saveError && <Notification message={"Save data error!"} type={NotificationType.ERROR}/> }
             </SP.StatusInfo>

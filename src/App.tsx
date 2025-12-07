@@ -13,6 +13,7 @@ function App(): JSX.Element {
     const {
         loading,
         error,
+        reload,
         parseManifestFromUrl,
         getLaunchUrl,
         manifest,
@@ -30,6 +31,11 @@ function App(): JSX.Element {
         }
     }, [launch, error, manifest, parseManifestFromUrl]);
 
+    const reloadAll = () => {
+        setLaunch(true);
+        reload();
+    }
+
     const launchUrl = getLaunchUrl();
 
     console.log(manifest);
@@ -38,9 +44,13 @@ function App(): JSX.Element {
         <Box>
             <ToolBar />
             <Container fixed>
-                <Box component={'div'} display={'flex'} flexDirection={'row'}>
-                    <Typography variant={'body1'}>Launch</Typography>
-                    <CustomButton onClick={() => setLaunch(true)} disabled={launch}>Hello</CustomButton>
+                <Box component={'div'}  >
+                    <Box component={'div'}>
+                        <Typography variant={'h5'}>Application</Typography>
+                    </Box>
+                    <Box>
+                        <CustomButton onClick={reloadAll} disabled={launch}>LAUNCH</CustomButton>
+                    </Box>
                 </Box>
                 { launch && loading && <Box mt={1} mb={1}>
                     <Alert variant="filled" severity="info">Loading SCORM package ...</Alert>

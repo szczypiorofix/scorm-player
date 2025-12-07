@@ -53,9 +53,16 @@ export const useScormManifest = () => {
         return manifest ? ScormParser.getLaunchableItems(manifest) : [];
     };
 
+    const reload = () => {
+        setError(null);
+        setLoading(true);
+        setManifest(null);
+    }
+
     return {
         manifest,
         loading,
+        reload,
         error,
         parseManifestFile,
         parseManifestFromUrl,

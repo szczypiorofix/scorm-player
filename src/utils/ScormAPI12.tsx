@@ -1,5 +1,5 @@
-import { SCORM_BOOLEAN, type Scorm12API, type CMI12 } from "../features/scorm/api";
-import type {PlayerRootState} from "../features/scorm/scorm.types.ts";
+import { SCORM_BOOLEAN, type Scorm12API, type CMI12, TRAINING_FORMAT } from "../features/scorm/api";
+import type { PlayerRootState } from "../features/scorm/scorm.types.ts";
 import { getScormValue, setScormValue } from "./SetNestedValue.ts";
 
 export interface ScormApi12RootState {
@@ -23,7 +23,8 @@ export function createScormApi12(
             isInitialized: false,
             error: '',
             lastSaved: null,
-            isLoading: false
+            isLoading: false,
+            trainingVersion: TRAINING_FORMAT.SCORM_1_2
         },
         scormData: (initialData?.scormData as CMI12) || defaultData
     };
