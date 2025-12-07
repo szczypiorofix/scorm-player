@@ -23,7 +23,6 @@ import {
     type TrainingFormat,
     type Scorm12Status,
 } from "../../features/scorm/api";
-import {CustomButton} from "../button/CustomButton.tsx";
 
 const ScormPlayer: React.FC<IScormPlayerProps> = (props: IScormPlayerProps) => {
     const [playerState, setPlayerState] = useState<PlayerRootState>(DEFAULT_SCORM_STATE);
@@ -144,10 +143,6 @@ const ScormPlayer: React.FC<IScormPlayerProps> = (props: IScormPlayerProps) => {
     return (
         <SP.ScormPlayer>
             <SP.StatusInfo>
-                <div>
-                    Load training:
-                    <CustomButton>Hello</CustomButton>
-                </div>
                 <StatusGroup title={"Uczestnik"} value={studentName}/>
                 <StatusGroup title={"Status Inicjalizacji"} value={playerState.meta.isInitialized ? 'Aktywne' : 'Nieaktywne'}/>
                 <StatusGroup title={"Status Ukończenia"} value={lessonStatus}/>

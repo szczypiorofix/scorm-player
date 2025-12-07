@@ -30,9 +30,11 @@ export const useScormManifest = () => {
             if (!response.ok) {
                 throw new Error(`Failed to fetch manifest: ${response.statusText}`);
             }
+
             console.log('Awaiting...');
-            await sleep(2000);
+            await sleep(1000);
             console.log('Done.');
+
             const xmlContent: string = await response.text();
             const parsedManifest: ScormManifest = ScormParser.parseManifest(xmlContent);
             setManifest(parsedManifest);
