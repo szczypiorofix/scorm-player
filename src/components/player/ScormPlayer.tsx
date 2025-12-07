@@ -23,6 +23,7 @@ import {
     type TrainingFormat,
     type Scorm12Status,
 } from "../../features/scorm/api";
+import {CustomButton} from "../button/CustomButton.tsx";
 
 const ScormPlayer: React.FC<IScormPlayerProps> = (props: IScormPlayerProps) => {
     const [playerState, setPlayerState] = useState<PlayerRootState>(DEFAULT_SCORM_STATE);
@@ -47,6 +48,8 @@ const ScormPlayer: React.FC<IScormPlayerProps> = (props: IScormPlayerProps) => {
         courseId: COURSE_ID,
     });
 
+    console.log('initialScormData: ', initialScormData);
+
     const { saveProgress, isLoading: isSavingProgress, error: saveError } = useSaveProgress({
         userId: studentName,
         courseId: COURSE_ID,
@@ -58,7 +61,7 @@ const ScormPlayer: React.FC<IScormPlayerProps> = (props: IScormPlayerProps) => {
             scormData: newData.scormData
         }));
 
-        console.log(newData);
+        console.log('handleScormUpdate: ', newData);
 
         saveProgress(newData);
     }, [saveProgress]);
@@ -103,7 +106,7 @@ const ScormPlayer: React.FC<IScormPlayerProps> = (props: IScormPlayerProps) => {
                 break;
         }
 
-        console.log("SCORM API created and attached to window.");
+        console.log("SCORM API created and attached to window. ");
 
         return () => {
             if (trainingFormat === TRAINING_FORMAT.SCORM_1_2) {
@@ -141,6 +144,10 @@ const ScormPlayer: React.FC<IScormPlayerProps> = (props: IScormPlayerProps) => {
     return (
         <SP.ScormPlayer>
             <SP.StatusInfo>
+                <div>
+                    Load training:
+                    <CustomButton>Hello</CustomButton>
+                </div>
                 <StatusGroup title={"Uczestnik"} value={studentName}/>
                 <StatusGroup title={"Status Inicjalizacji"} value={playerState.meta.isInitialized ? 'Aktywne' : 'Nieaktywne'}/>
                 <StatusGroup title={"Status Ukończenia"} value={lessonStatus}/>

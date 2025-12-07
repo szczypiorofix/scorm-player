@@ -1,10 +1,8 @@
 import React, { useEffect } from 'react';
-
 import ScormPlayer from './components/player/ScormPlayer';
-import { Header } from "./components/header/Header";
-import { AppStyled } from "./App.style";
-import { Notification } from "./components/notification/Notification";
-import { NotificationType } from "./components/notification/Notification";
+import Container from '@mui/material/Container';
+import Alert from '@mui/material/Alert';
+import Box from '@mui/material/Box';
 import { TRAINING_CONTAINER_FOLDER_NAME } from './shared/constants';
 import { useScormManifest } from './features/scorm/hooks/useScormManifest';
 
@@ -18,28 +16,28 @@ function App(): React.JSX.Element {
     } = useScormManifest();
 
     useEffect(() => {
-        if (!manifest && !loading && !error) {
+        if (!manifest && !error) {
             parseManifestFromUrl('/scorm/imsmanifest.xml')
                 .then(() => console.log('Manifest parsed'))
                 .catch(e => console.log('Error: ' + e));
         }
-    }, [error, loading, manifest, parseManifestFromUrl]);
+    }, [error, manifest, parseManifestFromUrl]);
 
     const launchUrl = getLaunchUrl();
 
     return (
-        <AppStyled>
-            <Header />
-            { loading && <Notification message={"Loading SCORM package..."} type={NotificationType.INFO} /> }
-            { error && <Notification message={"Error: " + error} type={NotificationType.ERROR} /> }
-            { !loading && !launchUrl && <Notification message={"No launch URL found"} type={NotificationType.ERROR}/> }
+        <Container fixed>
+            { loading && <Box mt={1} mb={1}><Alert variant="filled" severity="info">Loading SCORM package ...</Alert></Box> }
+            { error && <Box mt={1} mb={1}><Alert variant="filled" severity="error">Error: {error}</Alert></Box> }
+            { !loading && !launchUrl && <Box mt={1} mb={1}><Alert variant="filled" severity="error">No launch URL found.</Alert></Box> }
+
             <main>
-                { launchUrl && manifest && launchUrl.length > 0 && <ScormPlayer
+                { !error && launchUrl && manifest && launchUrl.length > 0 && <ScormPlayer
                     scormFilePath={ `/${TRAINING_CONTAINER_FOLDER_NAME}/${launchUrl}`} 
                     manifest={manifest}
                 /> }
             </main>
-        </AppStyled>
+        </Container>
     );
 }
 
